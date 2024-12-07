@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dash.css') }}">
+    <title>Mubi Seridoense</title>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <a href="{{ url_for('login') }}" class="top-link">Entrar</a>
+            <a href="{{ url_for('register') }}" class="top-link">Cadastrar</a>
+        </div>
+        <div class="content">
+            <h1 class="title">Mubi Seridoense</h1>
+            <p class="subtitle">Viaje pelo Seridó sem sair do conforto da sua casa!</p>
+        </div>
+        <div class="footer">
+            <a href="https://www.mubiseridoense.com" target="_blank" class="footer-link">www.mubiseridoense.com</a>
+        </div>
+    </div>
+</body>
+</html>
