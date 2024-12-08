@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='prefer.css') }}">
+    <title>Preferências</title>
+</head>
+<body>
+    <div class="container">
+        <form action="{{ url_for('preferencias') }}" method="POST">
+            <button type="button" class="botao-forms">
+                <a href="{{ url_for('main') }}" class="btn-link">Deixar para mais tarde</a>
+            </button>
+            <h1 class="tit_forms">Escolha suas preferências!</h1>
+            <div class="categorias">
+                <div class="categoria">
+                    <label>
+                        <input type="checkbox" name="generos" value="acao">
+                        <img src="{{ url_for('static', filename='img/acao.jpg') }}" alt="Imagem da categoria Ação">
+                        <p>Ação</p>
+                    </label>
+                </div>
+                <div class="categoria">
+                    <label>
+                        <input type="checkbox" name="generos" value="comedia">
+                        <img src="{{ url_for('static', filename='img/comedia.jpg') }}" alt="Imagem da categoria Comédia">
+                        <p>Comédia</p>
+                    </label>
+                </div>
+                <div class="categoria">
+                    <label>
+                        <input type="checkbox" name="generos" value="drama">
+                        <img src="{{ url_for('static', filename='img/drama.jpg') }}" alt="Imagem da categoria Drama">
+                        <p>Drama</p>
+                    </label>
+                </div>
+                <div class="categoria">
+                    <label>
+                        <input type="checkbox" name="generos" value="biografia">
+                        <img src="{{ url_for('static', filename='img/biografia.jpg') }}" alt="Imagem da categoria Biografia">
+                        <p>Biografia</p>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="botao-forms">Salvar Preferências</button>
+        </form>
+    </div>
+    <div class="footer">
+        <a href="https://www.mubiseridoense.com" target="_blank" class="footer-link">www.mubiseridoense.com</a>
+    </div>
+</body>
+</html>
