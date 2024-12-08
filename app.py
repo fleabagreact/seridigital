@@ -20,16 +20,9 @@ def register():
         return redirect(url_for('preferencias'))
     return render_template('register.html')
 
-@app.route('/preferencias', methods=['POST', 'GET'])
+@app.route('/preferencias')
 def preferencias():
-    if request.method == 'POST':
-        # obter preferências selecionadas
-        generos_selecionados = request.form.getlist('generos')
-        print(f"Gêneros selecionados: {generos_selecionados}")  # Apenas para debug
-        # pode salvar os dados no banco ou realizar outro processamento
-        # redirecionar para o main após salvar
-        return redirect(url_for('main'))
-    return render_template('preferencias.html')
+    return render_template('prefer.html')
 
 @app.route('/main')
 def main():
