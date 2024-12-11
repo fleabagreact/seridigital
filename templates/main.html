@@ -1,15 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mubi Seridoense - Página Principal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-    <title>Mubi Seridoense - Página Inicial </title>
 </head>
 <body>
-    <div class="container">
-        <h1>Mubi Seridoense</h1>
-        <p>Bem-vindo à Mubi Seridoense</p>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('main') }}">Mubi Seridoense</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('lista') }}">Minha Lista</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('perfil') }}">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('comunidade') }}">Comunidade</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('configuracoes') }}">Configurações</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Large Carousel -->
+         <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/static/img/large1.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="/static/img/large2.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="/static/img/large3.jpg" class="d-block w-100" alt="...">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        
+
+        <!-- Smaller Carousels -->
+        <h2 class="mb-3">Filmes Populares</h2>
+        <div id="popularCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col"><img src="/static/img/popular1.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/popular2.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/popular3.jpg" class="d-block w-100" alt="..."></div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col"><img src="/static/img/popular4.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/popular5.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/popular6.jpg" class="d-block w-100" alt="..."></div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#popularCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#popularCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <h2 class="mb-3">Recomendados para Você</h2>
+        <div id="recommendedCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col"><img src="/static/img/recommended1.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/recommended2.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/recommended3.jpg" class="d-block w-100" alt="..."></div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="row">
+                        <div class="col"><img src="/static/img/recommended4.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/recommended5.jpg" class="d-block w-100" alt="..."></div>
+                        <div class="col"><img src="/static/img/recommended6.jpg" class="d-block w-100" alt="..."></div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <!-- Posts -->
+        <h2 class="mb-3">Mais Curtidas na Rede Social</h2>
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="/static/img/post1.jpg" class="card-img-top" alt="Post 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Postagem 1</h5>
+                        <p class="card-text">Descrição da postagem 1.</p>
+                        <a href="{ url_for('comunidade') }" class="btn btn-primary">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="/static/img/post2.jpg" class="card-img-top" alt="Post 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Postagem 2</h5>
+                        <p class="card-text">Descrição da postagem 2.</p>
+                        <a href="{ url_for('comunidade') }" class="btn btn-primary">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="/static/img/post3.jpg" class="card-img-top" alt="Post 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Postagem 3</h5>
+                        <p class="card-text">Descrição da postagem 3.</p>
+                        <a href="{ url_for('comunidade') }" class="btn btn-primary">Ver mais</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <a href="https://www.mubiseridoense.com" target="_blank" class="footer-link">www.mubiseridoense.com</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

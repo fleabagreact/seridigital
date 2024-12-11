@@ -28,5 +28,21 @@ def preferencias():
 def main():
     return render_template('main.html')
 
+@app.route('/lista')
+def lista():
+    return render_template('lista.html')
+
+@app.route('/perfil')
+def perfil():
+    return render_template('perfil.html')
+
+@app.route('/comunidade')
+def comunidade():
+    return render_template('comunidade.html')
+
+@app.route('/configuracoes')
+def configuracoes():
+    return render_template('configuracoes.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
