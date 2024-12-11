@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mubi Seridoense - Comunidade</title>
+    <title>Configurações</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='config.css') }}">
@@ -28,11 +28,40 @@
 
     <main class="container py-5">
         <h1 class="text-center">Configurações</h1>
-        <p class="text-center">Aqui você pode gerenciar as configurações de seu perfil.</p>
+        <p class="text-center">Gerencie suas configurações de perfil e conta.</p>
 
         <div class="row">
             <div class="col-md-6 mx-auto">
-                <div class="card">
+                <!-- Alterar Nome de Usuário -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Alterar Nome de Usuário</h5>
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Novo nome de usuário</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Alterar Nome</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Alterar Email -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Alterar Email</h5>
+                        <form method="post">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Novo email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Alterar Email</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Alterar Senha -->
+                <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title">Alterar senha</h5>
                         <form method="post">
@@ -52,6 +81,15 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Sair da Conta -->
+                <div class="card mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Sair da Conta</h5>
+                        <a href="{{ url_for('index') }}" class="btn btn-danger">Sair</a>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>

@@ -7,6 +7,7 @@ body {
     min-height: 100vh;
     background: url('/static/img/background.jpg') no-repeat center center/cover;
     color: white;
+    padding-bottom: 100px;
 }
 
 main {

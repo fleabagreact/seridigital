@@ -32,11 +32,18 @@
         <div class="row">
             <div class="col-md-6 mx-auto">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body text-center">
+                        <!-- Foto de Perfil -->
+                        <img src="{{ url_for('static', filename='img/perfil.jpg') }}" alt="Foto de Perfil" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
+                        <p><em>Adicione ou atualize sua foto de perfil.</em></p>
+
+                        <!-- Informações do Usuário -->
                         <h5 class="card-title">Suas informações</h5>
                         <p class="card-text">Nome: {{ user.name }}</p>
                         <p class="card-text">Email: {{ user.email }}</p>
-                        <a href="#" class="btn btn-primary" onclick="alert('Funcionalidade em construção!')">Editar Perfil</a>
+
+                        <!-- Botão Editar Perfil -->
+                        <a href="{{ url_for('configuracoes') }}" class="btn btn-primary">Editar Perfil</a>
                     </div>
                 </div>
             </div>
