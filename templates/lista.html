@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='lista.css') }}">
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('main') }}">Mubi Seridoense</a>
@@ -29,7 +28,6 @@
     <!-- Conteúdo Principal -->
     <main class="container mt-5">
         <h1 class="text-center mb-4">Minha Lista</h1>
-        <!-- Grid de Imagens -->
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             <!-- Item 1 -->
             <div class="col">
@@ -57,17 +55,17 @@
                     <img src="{{ url_for('static', filename='img/livro1.jpg') }}" class="card-img-top" alt="Livro 1">
                     <div class="card-body">
                         <h5 class="card-title">Arlindo</h5>
-                        <p class="card-text">Arlindo, um adolescente do interior do Rio Grande do Norte, enfrenta desafios para ser aceito como é, enquanto vive suas paixões, amizades e ajuda a família. Aos poucos, descobre a força de lutar por sua identidade com apoio de quem o ama.</p>
+                        <p class="card-text">Arlindo enfrenta desafios para ser aceito como é, enquanto vive suas paixões, amizades e ajuda a família. Aos poucos, descobre a força de lutar por sua identidade com apoio de quem o ama.</p>
                     </div>
                 </div>
             </div>
             <!-- Item 4 -->
             <div class="col">
                 <div class="card h-100">
-                    <img src="{{url_for('static', filename='static/img/filme4.jpg')}}" class="card-img-top" alt="Filme 4">
+                    <img src="{{url_for('static', filename='img/livro2.jpg')}}" class="card-img-top" alt="Livro 2">
                     <div class="card-body">
-                        <h5 class="card-title">Título do Filme 4</h5>
-                        <p class="card-text">Descrição breve do filme.</p>
+                        <h5 class="card-title">O mar me levou a você</h5>
+                        <p class="card-text">Matias, um surfista dividido entre o sonho profissional e o hostel da família, encontra Júlio, um garoto que transforma seu verão e desafia seus medos. Será que ele dará uma chance ao amor?</p>
                     </div>
                 </div>
             </div>
