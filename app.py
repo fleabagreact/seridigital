@@ -34,7 +34,11 @@ def lista():
 
 @app.route('/perfil')
 def perfil():
-    return render_template('perfil.html')
+    user = {
+        'name': 'Mubi Seridoense',
+        'email': 'mubiseridoense@email.com'
+    }
+    return render_template('perfil.html', user=user)
 
 @app.route('/comunidade')
 def comunidade():

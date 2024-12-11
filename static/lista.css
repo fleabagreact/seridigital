@@ -1,5 +1,5 @@
 body {
-    font-family: Poppins, sans-serif;
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
@@ -14,7 +14,7 @@ main {
     flex: 1;
 }
 
-.navbar {
+navbar {
     position: fixed;
     top: 0;
     left: 0;
@@ -23,6 +23,10 @@ main {
     box-shadow: none;
     z-index: 1030;
     transition: 0.3s;
+}
+
+.navbar.bg-dark {
+    background-color: transparent !important;
 }
 
 .navbar-brand,
@@ -48,58 +52,6 @@ main {
 
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
-.carousel {
-    margin-top: 70px;
-}
-
-.carousel-inner img {
-    border-radius: 15px;
-    max-height: 500px;
-    object-fit: cover;
-}
-
-.carousel-item {
-    transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-.card {
-    border: none;
-    border-radius: 15px;
-    overflow: hidden;
-    transition: 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-.card-img-top {
-    border-bottom: 2px solid #333;
-}
-
-.card-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.card-text {
-    font-size: 1rem;
-    color: #555;
-}
-
-.btn-primary {
-    background-color: #333;
-    border: none;
-    transition: 0.3s;
-}
-
-.btn-primary:hover {
-    background-color: #333;
-    opacity: 0.8;
 }
 
 .footer {
