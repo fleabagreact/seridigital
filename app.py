@@ -1,52 +1,54 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, url_for, request, redirect, flash
+from sqlalchemy import create_engine, Column, String, Integer
+from sqlalchemy.orm import sessionmaker, declarative_base
+from werkzeug.security import generate_password_hash  
 
 app = Flask(__name__)
+app.secret_key = 'chave_secreta'  
+
+db = create_engine("sqlite:///meubanco.db")
+Session = sessionmaker(bind=db)
+session = Session()
+
+Base = declarative_base()
+
+class Usuario(Base):
+    __tablename__ = "usuarios"
+
+    id = Column("id", Integer, primary_key=True, autoincrement=True)
+    nome = Column("nome", String)
+    email = Column("email", String)
+    senha = Column("senha", String)
+    biografia = Column("biografia", String)
+
+    def __init__(self, nome, email, senha, biografia):
+        self.nome = nome
+        self.email = email
+        self.senha = senha
+        self.biografia = biografia
+
+Base.metadata.create_all(bind=db)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/cad_users', methods=['GET', 'POST'])
+def cad_users():
     if request.method == 'POST':
-        # validar o login
-        return redirect(url_for('main'))
-    return render_template('login.html')
+        nome = request.form['nome']
+        email = request.form['email']
+        senha = request.form['senha']
+        biografia = request.form['biografia']
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        # registrar o usuário
-        return redirect(url_for('preferencias'))
-    return render_template('register.html')
+        if not email:
+            flash('Email é obrigatório')
+        else:
+            senha_hash = generate_password_hash(senha)  # <-- HASH DA SENHA
+            usuario = Usuario(nome, email, senha_hash, biografia)
+            session.add(usuario)
+            session.commit()
+            flash('Usuário cadastrado com sucesso!')
+            return redirect(url_for('index'))
 
-@app.route('/preferencias')
-def preferencias():
-    return render_template('prefer.html')
-
-@app.route('/main')
-def main():
-    return render_template('main.html')
-
-@app.route('/lista')
-def lista():
-    return render_template('lista.html')
-
-@app.route('/perfil')
-def perfil():
-    user = {
-        'name': 'Mubi Seridoense',
-        'email': 'mubiseridoense@email.com'
-    }
-    return render_template('perfil.html', user=user)
-
-@app.route('/comunidade')
-def comunidade():
-    return render_template('comunidade.html')
-
-@app.route('/configuracoes')
-def configuracoes():
-    return render_template('configuracoes.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return render_template('cad_users.html')
