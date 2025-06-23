@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
-    <title>Login</title>
+    <title>Registro</title>
 </head>
 <body>
     <div class="container">
         <div class="top-bar">
-            <a href="{{ url_for('login') }}" class="top-link">Entrar</a>
-            <a href="{{ url_for('register') }}" class="top-link">Cadastrar</a>
+            <a href="{{ url_for('bp.login') }}" class="top-link">Entrar</a>
+            <a href="{{ url_for('bp.register') }}" class="top-link">Cadastrar</a>
         </div>
-        <h1>Login</h1>
+        <h1>Registro</h1>
         <form method="post">
+            <input type="text" name="name" placeholder="Nome" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Senha" required>
-            <button type="submit">Entrar</button>
+            <button type="submit">Registrar</button>
         </form>
     </div>
     <div class="footer">

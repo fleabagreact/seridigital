@@ -1,0 +1,5 @@
+em caso de erro ao banco de dados, use:
+
+flask db init
+flask db migrate -m "Criar tabela usuarios"
+flask db upgrade
