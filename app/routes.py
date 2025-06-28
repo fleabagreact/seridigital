@@ -70,6 +70,13 @@ def login():
     # GET
     return render_template('login.html')
 
+#Listar usuários cadastrados
+
+@bp.route('/lista_users')
+def lista_users():
+    usuarios = Usuario.query.all()
+    return render_template('lista_users.html', usuarios=usuarios, usuario=current_user)
+
 @bp.route('/logout')
 @login_required
 def logout():

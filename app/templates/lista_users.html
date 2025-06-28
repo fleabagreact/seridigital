@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Seridigital - Acervo Cultural</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -12,23 +13,28 @@
             <nav>
                 <a href="/">Início</a>
                 <a href="/cad_users">Cadastrar Usuário</a>
-                <a href="/lista_users">Usuários Cadastrados</a>
+                <a href="/">Usuários Cadastrados</a>
+
             </nav>
         </div>
     </header>
 
     <section class="hero">
         <div class="container">
-            <h2>Bem-vindo ao Seridigital</h2>
-            <p>Preservando e difundindo a cultura do Seridó através da tecnologia.</p>
+            <h2>Usuarios Cadastrados</h2>
         </div>
     </section>
 
     <section class="info">
         <div class="container">
-            <h3>Explore o acervo</h3>
-            <p>Descubra documentos, imagens, músicas e memórias que compõem a identidade cultural do povo seridoense.</p>
-            <a href="/cad_users" class="btn">Comece cadastrando um usuário</a>
+            <p>Acesse aqui a lista de usuários cadastrados em nossa plataforma</p>
+            <ul>
+                {% for u in usuarios %}
+                <p>{{ u.nome }}</p>
+                {% endfor %}
+            </ul>
+          <a href="{{ url_for('bp.logout') }}" class="btn">Sair</a>
+            
         </div>
     </section>
 
@@ -37,5 +43,6 @@
             <p>&copy; 2025 Seridigital. Todos os direitos reservados.</p>
         </div>
     </footer>
+
 </body>
 </html>
