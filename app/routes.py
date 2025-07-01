@@ -114,10 +114,11 @@ def atualizar_usuario(id):
 @login_required
 def deletar_usuario():
     try:
-        db.session.delete(current_user)
+        usuario = current_user  # Salva o usuário atual
+        logout_user()  # Desloga primeiro
+        db.session.delete(usuario)  # Depois de deslogar, deleta
         db.session.commit()
         flash('Usuário deletado com sucesso!', 'success')
-        logout_user()
         return redirect(url_for('bp.index'))
     except Exception as e:
         db.session.rollback()
