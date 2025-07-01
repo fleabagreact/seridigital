@@ -88,3 +88,24 @@ def logout():
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
+
+# Rota para exibir o formulário e processar a atualização dos dados de um usuário existente
+@bp.route('/atualizar_usuario/<int:id>', methods=['GET', 'POST'])
+@login_required
+def atualizar_usuario(id):
+    usuario = Usuario.query.get_or_404(id)
+
+    if request.method == 'POST':
+        usuario.nome = request.form.get('nome')
+        usuario.email = request.form.get('email')
+        usuario.biografia = request.form.get('biografia')
+        nova_senha = request.form.get('senha')
+
+        if nova_senha:
+            usuario.senha = nova_senha  # setter do hash
+
+        db.session.commit()
+        flash('Usuário atualizado com sucesso!', 'success')
+        return redirect(url_for('bp.index'))
+
+    return render_template('atualizar_usuario.html', usuario=usuario)
