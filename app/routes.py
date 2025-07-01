@@ -109,3 +109,17 @@ def atualizar_usuario(id):
         return redirect(url_for('bp.index'))
 
     return render_template('atualizar_usuario.html', usuario=usuario)
+
+@bp.route('/deletar_usuario', methods=['POST'])
+@login_required
+def deletar_usuario():
+    try:
+        db.session.delete(current_user)
+        db.session.commit()
+        flash('Usuário deletado com sucesso!', 'success')
+        logout_user()
+        return redirect(url_for('bp.index'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao deletar usuário: {str(e)}', 'danger')
+        return redirect(url_for('bp.index'))
