@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ content.title }} - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3>{{ content.title }}</h3>
+                        {% if current_user.is_authenticated %}
+                            <div class="btn-group">
+                                <a href="{{ url_for('content.edit_content', content_id=content.id) }}" class="btn btn-outline-primary btn-sm">Editar</a>
+                                <form method="POST" action="{{ url_for('content.delete_content', content_id=content.id) }}" style="display: inline;" 
+                                      onsubmit="return confirm('Tem certeza que deseja deletar este conteúdo?')">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Deletar</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if content.thumbnail %}
+                                <img src="{{ content.thumbnail }}" class="img-fluid rounded" alt="{{ content.title }}">
+                            {% else %}
+                                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 300px;">
+                                    <i class="fas fa-play-circle fa-5x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6">{{ content.type.title() }}</span>
+                                {% if content.release_date %}
+                                    <span class="badge bg-secondary fs-6">{{ content.release_date.year }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if content.description %}
+                                <h5>Descrição</h5>
+                                <p>{{ content.description }}</p>
+                            {% endif %}
+                            
+                            {% if content.url %}
+                                <div class="mb-3">
+                                    <a href="{{ content.url }}" target="_blank" class="btn btn-success">
+                                        <i class="fas fa-external-link-alt"></i> Assistir
+                                    </a>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="text-muted">
+                                <small>Adicionado em {{ content.created_at.strftime('%d de %B de %Y às %H:%M') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seção de comentários e avaliações (placeholder) -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>Comentários e Avaliações</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Funcionalidade em desenvolvimento. Em breve você poderá comentar e avaliar este conteúdo.</p>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <a href="{{ url_for('content.list_content') }}" class="btn btn-secondary">Voltar ao Catálogo</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Usuários - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Usuários Cadastrados</h2>
+            <p class="text-muted">Conheça outros membros da comunidade SeriDigital</p>
+            
+            {% if usuarios %}
+                <div class="row">
+                    {% for u in usuarios %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        {% if u.profile_picture %}
+                                            <img src="{{ u.profile_picture }}" alt="Foto de {{ u.nome }}" class="rounded-circle me-3" width="50" height="50">
+                                        {% else %}
+                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                                {{ u.nome[0].upper() }}
+                                            </div>
+                                        {% endif %}
+                                        <div>
+                                            <h5 class="card-title mb-0">{{ u.nome }}</h5>
+                                            <small class="text-muted">{{ u.email }}</small>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if u.biografia %}
+                                        <p class="card-text">{{ u.biografia[:100] }}{% if u.biografia|length > 100 %}...{% endif %}</p>
+                                    {% else %}
+                                        <p class="card-text text-muted">Nenhuma biografia disponível.</p>
+                                    {% endif %}
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">Membro desde {{ u.criado_em.strftime('%d/%m/%Y') }}</small>
+                                        <a href="{{ url_for('users.profile', user_id=u.id) }}" class="btn btn-outline-primary btn-sm">Ver Perfil</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <h4>Nenhum usuário encontrado</h4>
+                    <p>Ainda não há usuários cadastrados na plataforma.</p>
+                    {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Seja o primeiro a se cadastrar!</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

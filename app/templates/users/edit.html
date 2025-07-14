@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Perfil - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Editar Perfil</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nome" class="form-label">Nome</label>
+                                <input type="text" class="form-control" id="nome" name="nome" value="{{ usuario.nome }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ usuario.email }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="senha" class="form-label">Nova Senha</label>
+                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Deixe em branco para manter a senha atual">
+                            <div class="form-text">Deixe este campo vazio se não quiser alterar sua senha.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="biografia" class="form-label">Biografia</label>
+                            <textarea class="form-control" id="biografia" name="biografia" rows="4" placeholder="Conte um pouco sobre você...">{{ usuario.biografia or '' }}</textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('users.profile', user_id=usuario.id) }}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

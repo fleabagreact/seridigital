@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Criar Post - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Criar Novo Post</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Funcionalidade em Desenvolvimento</strong><br>
+                        Esta é uma versão de demonstração. A funcionalidade completa de posts será implementada em breve.
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Título do Post</label>
+                            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Digite o título do seu post" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="categoria" class="form-label">Categoria</label>
+                            <select class="form-select" id="categoria" name="categoria" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="series">Séries</option>
+                                <option value="filmes">Filmes</option>
+                                <option value="discussao">Discussão Geral</option>
+                                <option value="recomendacao">Recomendações</option>
+                                <option value="review">Review</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="conteudo" class="form-label">Conteúdo</label>
+                            <textarea class="form-control" id="conteudo" name="conteudo" rows="6" placeholder="Escreva seu post aqui..." required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags (opcional)</label>
+                            <input type="text" class="form-control" id="tags" name="tags" placeholder="Ex: netflix, drama, comédia (separadas por vírgula)">
+                            <div class="form-text">Use tags para ajudar outros usuários a encontrar seu post.</div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('posts.list_posts') }}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Publicar Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

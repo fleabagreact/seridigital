@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Conteúdo - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Catálogo de Conteúdo</h2>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('content.create_content') }}" class="btn btn-primary">Adicionar Conteúdo</a>
+                {% endif %}
+            </div>
+            
+            {% if contents %}
+                <div class="row">
+                    {% for content in contents %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                {% if content.thumbnail %}
+                                    <img src="{{ content.thumbnail }}" class="card-img-top" alt="{{ content.title }}" style="height: 200px; object-fit: cover;">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="fas fa-play-circle fa-3x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">{{ content.title }}</h5>
+                                    
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">{{ content.type.title() }}</span>
+                                        {% if content.release_date %}
+                                            <span class="badge bg-secondary">{{ content.release_date.year }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if content.description %}
+                                        <p class="card-text">{{ content.description[:150] }}{% if content.description|length > 150 %}...{% endif %}</p>
+                                    {% endif %}
+                                    
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">Adicionado em {{ content.created_at.strftime('%d/%m/%Y') }}</small>
+                                            <a href="{{ url_for('content.view_content', content_id=content.id) }}" class="btn btn-outline-primary btn-sm">Ver Detalhes</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <h4>Nenhum conteúdo encontrado</h4>
+                    <p>Ainda não há conteúdo cadastrado na plataforma.</p>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('content.create_content') }}" class="btn btn-primary">Seja o primeiro a adicionar conteúdo!</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Faça login para adicionar conteúdo</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

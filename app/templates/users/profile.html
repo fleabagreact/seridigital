@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil de {{ usuario.nome }} - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Perfil de {{ usuario.nome }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            {% if usuario.profile_picture %}
+                                <img src="{{ usuario.profile_picture }}" alt="Foto de {{ usuario.nome }}" class="rounded-circle mb-3" width="150" height="150">
+                            {% else %}
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 150px; height: 150px; font-size: 3rem;">
+                                    {{ usuario.nome[0].upper() }}
+                                </div>
+                            {% endif %}
+                            
+                            {% if current_user.is_authenticated and current_user.id == usuario.id %}
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('users.edit_user', user_id=usuario.id) }}" class="btn btn-primary">Editar Perfil</a>
+                                    <form method="POST" action="{{ url_for('users.delete_user') }}" 
+                                          onsubmit="return confirm('Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita.')">
+                                        <button type="submit" class="btn btn-danger w-100">Deletar Conta</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <h4>{{ usuario.nome }}</h4>
+                            <p class="text-muted">{{ usuario.email }}</p>
+                            
+                            <hr>
+                            
+                            <div class="mb-3">
+                                <strong>Membro desde:</strong> {{ usuario.criado_em.strftime('%d de %B de %Y') }}
+                            </div>
+                            
+                            {% if usuario.biografia %}
+                                <div class="mb-3">
+                                    <strong>Biografia:</strong>
+                                    <p class="mt-2">{{ usuario.biografia }}</p>
+                                </div>
+                            {% else %}
+                                <div class="mb-3">
+                                    <em class="text-muted">Nenhuma biografia disponível.</em>
+                                </div>
+                            {% endif %}
+                            
+                            <hr>
+                            
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h5>{{ usuario.comentarios.count() }}</h5>
+                                    <small class="text-muted">Comentários</small>
+                                </div>
+                                <div class="col-4">
+                                    <h5>{{ usuario.likes.count() }}</h5>
+                                    <small class="text-muted">Likes</small>
+                                </div>
+                                <div class="col-4">
+                                    <h5>{{ usuario.avaliacoes.count() }}</h5>
+                                    <small class="text-muted">Avaliações</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seção de atividades recentes (placeholder para futuras implementações) -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5>Atividades Recentes</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Funcionalidade em desenvolvimento. Em breve você poderá ver as atividades recentes do usuário.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

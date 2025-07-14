@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Post #{{ post_id }} - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="alert alert-info">
+                <h4>Funcionalidade em Desenvolvimento</h4>
+                <p>Você está tentando editar o post #{{ post_id }}. Esta funcionalidade será implementada em breve.</p>
+                <a href="{{ url_for('posts.list_posts') }}" class="btn btn-primary">Voltar aos Posts</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

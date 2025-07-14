@@ -16,8 +16,19 @@ def create_app():
     # login
     login_manager.init_app(app)
 
-    # routes
-    from .routes import bp
-    app.register_blueprint(bp)
+    # blueprints
+    from .blueprints.main import main_bp
+    from .blueprints.auth import auth_bp
+    from .blueprints.users import users_bp
+    from .blueprints.posts import posts_bp
+    from .blueprints.content import content_bp
+    from .blueprints.redirects import redirects_bp
+    
+    app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(users_bp)
+    app.register_blueprint(posts_bp)
+    app.register_blueprint(content_bp)
+    app.register_blueprint(redirects_bp)
 
     return app
