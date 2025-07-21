@@ -3,6 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from alembic import op
+import sqlalchemy as sa
+from sqlalchemy import text
+
+
 db = SQLAlchemy()
 
 class Usuario(UserMixin, db.Model):
@@ -18,7 +23,9 @@ class Usuario(UserMixin, db.Model):
     _senha_hash = db.Column('usr_password', db.String(255), nullable=False)
     profile_picture = db.Column('usr_profile_picture', db.String(255))
     biografia = db.Column('usr_bio', db.Text)
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
     criado_em = db.Column('usr_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+
 
     # Relacionamentos
     seguidores = db.relationship('Follower', foreign_keys='Follower.follower_id', backref='seguidor', lazy='dynamic')
@@ -33,6 +40,10 @@ class Usuario(UserMixin, db.Model):
     def __repr__(self):
         return f"<Usuario {self.email}>"
 
+
+    def is_administrador(self):
+        return self.is_admin
+
     @property
     def senha(self):
         raise AttributeError("Senha não pode ser lida diretamente.")
@@ -43,6 +54,8 @@ class Usuario(UserMixin, db.Model):
 
     def checar_senha(self, senha_plaintext):
         return check_password_hash(self._senha_hash, senha_plaintext)
+    
+    
 
 class Follower(db.Model):
     __tablename__ = 'tb_followers'
@@ -60,6 +73,18 @@ class PrivateMessage(db.Model):
     text = db.Column('msg_text', db.Text, nullable=False)
     sent_at = db.Column('msg_sent_at', db.DateTime, default=datetime.utcnow, nullable=False)
     is_read = db.Column('msg_is_read', db.Boolean, default=False, nullable=False)
+
+#Classe para que as mensagens fiquem visiveis para todos os usuários
+class CommunityPost(db.Model):
+    __tablename__ = 'tb_community_posts'
+
+    id = db.Column('post_id', db.Integer, primary_key=True)
+    author_id = db.Column('post_author_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
+    content = db.Column('post_content', db.Text, nullable=False)
+    created_at = db.Column('post_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+
+    usuario = db.relationship('Usuario', backref='community_posts')
+
 
 class Comment(db.Model):
     __tablename__ = 'tb_comments'

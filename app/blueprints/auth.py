@@ -23,9 +23,15 @@ def register():
             flash('E-mail já cadastrado.', 'warning')
             return redirect(url_for('auth.register'))
 
-        # Cria e salva novo usuário
-        novo = Usuario(nome=nome, email=email, biografia=biografia)
-        novo.senha = senha  # setter já faz hash
+        is_admin = Usuario.query.count() == 0
+
+        novo = Usuario(
+            nome=nome,
+            email=email,
+            biografia=biografia,
+            is_admin=is_admin
+        )
+        novo.senha = senha  
         db.session.add(novo)
         db.session.commit()
 
@@ -34,6 +40,7 @@ def register():
 
     # GET
     return render_template('auth/register.html')
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
