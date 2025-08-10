@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Criar Nova Comunidade</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='static/lista.css') }}" />
+</head>
+<body>
+    <h1>Criar Nova Comunidade</h1>
+
+    <form method="POST" action="{{ url_for('comunidade.criar_comunidade') }}">
+        <div>
+            <label for="nome">Nome da Comunidade:</label><br />
+            <input type="text" id="nome" name="nome" required maxlength="255" />
+        </div>
+        <br />
+        <div>
+            <label for="descricao">Descrição (opcional):</label><br />
+            <textarea id="descricao" name="descricao" rows="4" cols="50"></textarea>
+        </div>
+        <br />
+        <button type="submit">Criar Comunidade</button>
+    </form>
+
+</body>
+</html>

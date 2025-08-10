@@ -10,6 +10,36 @@
                 <h1 class="display-4">Bem-vindo ao SeriDigital</h1>
                 <p class="lead">Sua plataforma completa para descobrir, assistir e discutir sobre séries e conteúdo digital.</p>
             </div>
+
+            <!-- Campo de busca de obras -->
+            <form action="{{ url_for('content.buscar_obra') }}" method="get" class="mb-4">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        name="q" 
+                        placeholder="Digite título ou palavra-chave para buscar obra" 
+                        value="{{ termo_busca or '' }}"
+                        aria-label="Buscar obras"
+                    >
+                    <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+                </div>
+            </form>
+
+            <!-- Lista de obras buscadas / ou todas obras -->
+            {% if obras %}
+            <div class="list-group mb-5">
+                {% for obra in obras %}
+                <a href="{{ url_for('content.detalhe_obra', obra_id=obra.id) }}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">{{ obra.title }}</h5>
+                    <p class="mb-1 text-truncate">{{ obra.description or 'Sem descrição' }}</p>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+                <p class="text-muted">Nenhuma obra encontrada.</p>
+            {% endif %}
+
             
             {% if current_user.is_authenticated %}
                 <div class="alert alert-info mt-4">
@@ -76,9 +106,16 @@
                                 <a href="{{ url_for('users.list_users') }}" class="btn btn-outline-primary">Ver Usuários</a>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">Comunidade</h5>
-                                <p class="card-text">Entrar na comunidade</p>
+                                <p class="card-text">Entre na comunidade oficial da SeriDigital</p>
                                 <a href="{{ url_for('comunidade.comunidade') }}" class="btn btn-outline-primary">Entrar</a>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Crie sua própria comunidade</p>
+                                <a href="{{ url_for('comunidade.criar_comunidade') }}" class="btn btn-outline-primary">Criar</a>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Comunidades criadas por outros users</p>
+                                <a href="{{ url_for('comunidade.comunidade') }}" class="btn btn-outline-primary">Acessar</a>
                             </div>
                         </div>
                     </div>

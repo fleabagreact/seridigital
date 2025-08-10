@@ -25,11 +25,13 @@ def create_app():
     from .blueprints.redirects import redirects_bp
     from .blueprints.chat import chat_bp
     from .blueprints.comunidade import comunidade_bp
+    from .blueprints.feedbacks import feedback_bp
     
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(posts_bp)
+    app.register_blueprint(feedback_bp)
     app.register_blueprint(chat_bp)
     app.register_blueprint(content_bp)
     app.register_blueprint(redirects_bp)

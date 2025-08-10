@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <title>Buscar Obras</title>
+ 
+</head>
+<body>
+    <h1>Buscar Obras</h1>
+
+    <!-- Formulário de busca -->
+    <form action="{{ url_for('content.buscar_obra') }}" method="get">
+        <input type="text" name="q" placeholder="Digite título ou palavra-chave" value="{{ termo }}">
+        <button type="submit">Pesquisar</button>
+    </form>
+
+    <!-- Lista de conteúdos -->
+    <ul>
+        {% if resultados %}
+            {% for obra in resultados %}
+        <li>
+            <strong>{{ obra.title }}</strong><br>
+            {{ obra.description or 'Sem descrição' }}
+        </li>
+            {% endfor %}
+        {% else %}
+            <li>nenhuma obra encontrada</li>
+        {% endif %}
+    </ul>
+    <a class="navbar-brand" href="{{ url_for('main.index') }}">Inicio</a>
+
+</body>
+</html>

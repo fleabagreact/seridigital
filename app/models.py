@@ -80,10 +80,29 @@ class CommunityPost(db.Model):
 
     id = db.Column('post_id', db.Integer, primary_key=True)
     author_id = db.Column('post_author_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
+    community_id = db.Column('post_community_id', db.Integer, db.ForeignKey('tb_communities.com_id'), nullable=False)
     content = db.Column('post_content', db.Text, nullable=False)
     created_at = db.Column('post_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
 
     usuario = db.relationship('Usuario', backref='community_posts')
+    comunidade = db.relationship('Community', backref='community_posts')
+
+
+
+#Classe para comunidades criadas por usuários 
+
+class Community(db.Model):
+    __tablename__ = 'tb_communities'
+
+    id = db.Column('com_id', db.Integer, primary_key=True)
+    owner_id = db.Column('com_owner_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
+    name = db.Column('com_name', db.String(255), nullable=False)  # nome da comunidade
+    description = db.Column('com_description', db.Text)
+
+    created_at = db.Column('com_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+
+    owner = db.relationship('Usuario', backref='owned_communities')
+    posts = db.relationship('CommunityPost', backref='community', lazy='dynamic')
 
 
 class Comment(db.Model):

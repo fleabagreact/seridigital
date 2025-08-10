@@ -11,6 +11,21 @@ def list_content():
     contents = Content.query.all()
     return render_template('content/list.html', contents=contents)
 
+
+@content_bp.route('/buscar', methods=['GET'])
+@login_required
+def buscar_obra():
+    termo = request.args.get('q', '')  # captura o parâmetro de busca 'q' da URL
+
+    if termo:
+        # Exemplo simples: busca obras cujo título contenha o termo (case-insensitive)
+        resultados = Content.query.filter(Content.title.ilike(f'%{termo}%')).all()
+    else:
+        resultados = []
+
+    return render_template('buscar.html', resultados=resultados, termo=termo)
+
+
 @content_bp.route('/<int:content_id>')
 def view_content(content_id):
     """Visualiza um conteúdo específico"""

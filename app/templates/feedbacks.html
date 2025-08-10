@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Enviar Feedback - SeriDigital{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Envie seu Feedback para a Equipe</h2>
+
+    {% if mensagem_sucesso %}
+    <div class="alert alert-success" role="alert">
+        {{ mensagem_sucesso }}
+    </div>
+    {% elif mensagem_erro %}
+    <div class="alert alert-danger" role="alert">
+        {{ mensagem_erro }}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('feedback.enviar_feedback') }}">
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" name="nome" required
+                   value="{{ request.form.nome or '' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">E-mail</label>
+            <input type="email" class="form-control" id="email" name="email" required
+                   value="{{ request.form.email or '' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="assunto" class="form-label">Assunto</label>
+            <input type="text" class="form-control" id="assunto" name="assunto" required
+                   value="{{ request.form.assunto or '' }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="mensagem" class="form-label">Mensagem</label>
+            <textarea class="form-control" id="mensagem" name="mensagem" rows="5" required>{{ request.form.mensagem or '' }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enviar Feedback</button>
+    </form>
+</div>
+{% endblock %}
