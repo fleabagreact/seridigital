@@ -2,120 +2,105 @@
 
 ## Visão Geral
 
-O projeto foi reorganizado usando uma arquitetura modular baseada em Flask Blueprints para facilitar a manutenção e escalabilidade. Cada funcionalidade principal está separada em seu próprio módulo.
+O SeriDigital foi reorganizado em uma estrutura modular usando **Flask Blueprints** para melhor organização, manutenibilidade e escalabilidade do código.
 
-## Estrutura de Diretórios
+## Estrutura de Blueprints
 
+| Blueprint | Arquivo | Prefixo URL | Responsabilidade |
+|-----------|---------|-------------|------------------|
+| `main` | `app/blueprints/main.py` | `/` | Página inicial e dashboard |
+| `auth` | `app/blueprints/auth.py` | `/auth` | Autenticação (login/registro) |
+| `users` | `app/blueprints/users.py` | `/users` | Gerenciamento de usuários |
+| `posts` | `app/blueprints/posts.py` | `/posts` | Sistema de posts |
+| `content` | `app/blueprints/content.py` | `/content` | Gerenciamento de conteúdo |
+| `chat` | `app/blueprints/chat.py` | `/chat` | Sistema de mensagens privadas |
+| `comunidade` | `app/blueprints/comunidade.py` | `/comunidade` | Sistema de comunidades |
+| `feedbacks` | `app/blueprints/feedbacks.py` | `/feedbacks` | Sistema de feedback |
+| `redirects` | `app/blueprints/redirects.py` | `/` | Redirecionamentos de URLs antigas |
+
+## Sistema de Comunidades
+
+### Funcionalidades Implementadas
+
+✅ **Criação de Comunidades**: Usuários podem criar comunidades com nome e descrição
+✅ **Listagem de Comunidades**: Visualização de todas as comunidades disponíveis
+✅ **Postagens**: Sistema de postagens dentro das comunidades
+✅ **Sistema de Bloqueio**: Usuários podem bloquear comunidades individualmente
+✅ **Filtragem de Conteúdo**: Administradores podem marcar comunidades como filtradas
+✅ **Controle de Acesso**: Verificação de permissões baseada em status e bloqueios
+
+### Sistema de Bloqueio e Filtragem
+
+#### Bloqueio Individual
+- **Funcionalidade**: Usuários podem bloquear comunidades que não desejam ver
+- **Implementação**: Tabela `tb_community_blocks` com relacionamento usuário-comunidade
+- **Rotas**:
+  - `POST /comunidade/block/<id>` - Bloquear comunidade
+  - `POST /comunidade/unblock/<id>` - Desbloquear comunidade
+  - `GET /comunidade/blocked` - Listar comunidades bloqueadas
+
+#### Filtragem de Conteúdo
+- **Funcionalidade**: Administradores podem marcar comunidades como conteúdo sensível
+- **Implementação**: Campos `is_filtered` e `filter_reason` na tabela `tb_communities`
+- **Controle**: Checkbox para incluir/excluir conteúdo filtrado na listagem
+
+#### Bloqueio Global
+- **Funcionalidade**: Administradores podem bloquear comunidades globalmente
+- **Implementação**: Campo `status` na tabela `tb_communities` (active/blocked/private)
+- **Rotas Administrativas**:
+  - `POST /comunidade/admin/block/<id>` - Bloquear globalmente
+  - `POST /comunidade/admin/unblock/<id>` - Desbloquear globalmente
+  - `POST /comunidade/admin/filter/<id>` - Marcar como filtrado
+  - `POST /comunidade/admin/unfilter/<id>` - Remover filtro
+
+### Modelos de Dados
+
+#### Community (tb_communities)
+```python
+- id: Identificador único
+- owner_id: ID do criador da comunidade
+- name: Nome da comunidade
+- description: Descrição opcional
+- status: Status da comunidade (active/blocked/private)
+- is_filtered: Se o conteúdo é filtrado
+- filter_reason: Motivo do filtro
+- created_at: Data de criação
 ```
-app/
-├── __init__.py                 # Configuração principal da aplicação
-├── config.py                   # Configurações
-├── models.py                   # Modelos do banco de dados
-├── extensions.py               # Extensões do Flask
-├── blueprints/                 # Módulos organizados por funcionalidade
-│   ├── __init__.py
-│   ├── main.py                 # Páginas principais (index, etc.)
-│   ├── auth.py                 # Autenticação (login, registro, logout)
-│   ├── users.py                # Gerenciamento de usuários
-│   ├── posts.py                # Sistema de posts (futuro)
-│   └── content.py              # Gerenciamento de conteúdo
-├── templates/                  # Templates organizados por módulo
-│   ├── base.html              # Template base
-│   ├── main/
-│   │   └── index.html
-│   ├── auth/
-│   │   ├── login.html
-│   │   └── register.html
-│   ├── users/
-│   │   ├── list.html
-│   │   ├── profile.html
-│   │   └── edit.html
-│   ├── posts/
-│   │   ├── list.html
-│   │   ├── create.html
-│   │   ├── view.html
-│   │   └── edit.html
-│   └── content/
-│       ├── list.html
-│       ├── create.html
-│       ├── view.html
-│       └── edit.html
-└── static/                     # Arquivos estáticos (CSS, JS, imagens)
+
+#### CommunityBlock (tb_community_blocks)
+```python
+- id: Identificador único
+- user_id: ID do usuário que bloqueou
+- community_id: ID da comunidade bloqueada
+- reason: Motivo do bloqueio (opcional)
+- created_at: Data do bloqueio
 ```
 
-## Módulos (Blueprints)
+### Métodos do Usuário
+```python
+# Bloquear/desbloquear comunidades
+user.block_community(community_id, reason=None)
+user.unblock_community(community_id)
+user.is_community_blocked(community_id)
 
-### 1. Main (`main.py`)
-- **Responsabilidade**: Páginas principais e navegação geral
-- **Rotas**:
-  - `/` - Página inicial
-- **Prefixo**: Nenhum
+# Listar comunidades
+user.get_blocked_communities()
+user.get_accessible_communities(include_filtered=False)
+```
 
-### 2. Auth (`auth.py`)
-- **Responsabilidade**: Autenticação e autorização
-- **Rotas**:
-  - `/auth/login` - Login de usuários
-  - `/auth/register` - Cadastro de novos usuários
-  - `/auth/logout` - Logout
-- **Prefixo**: `/auth`
+### Métodos da Comunidade
+```python
+# Verificar status
+community.is_blocked()
+community.is_private()
+community.is_filtered()
+community.can_user_access(user_id)
+```
 
-### 3. Users (`users.py`)
-- **Responsabilidade**: Gerenciamento de perfis de usuários
-- **Rotas**:
-  - `/users/list` - Lista de usuários
-  - `/users/profile/<id>` - Perfil de usuário
-  - `/users/edit/<id>` - Editar perfil
-  - `/users/delete` - Deletar conta
-- **Prefixo**: `/users`
+## Mapeamento de URLs
 
-### 4. Posts (`posts.py`)
-- **Responsabilidade**: Sistema de posts da comunidade (em desenvolvimento)
-- **Rotas**:
-  - `/posts/` - Lista de posts
-  - `/posts/create` - Criar post
-  - `/posts/<id>` - Visualizar post
-  - `/posts/<id>/edit` - Editar post
-  - `/posts/<id>/delete` - Deletar post
-- **Prefixo**: `/posts`
-
-### 5. Content (`content.py`)
-- **Responsabilidade**: Gerenciamento de conteúdo (séries, filmes, etc.)
-- **Rotas**:
-  - `/content/` - Lista de conteúdo
-  - `/content/create` - Adicionar conteúdo
-  - `/content/<id>` - Visualizar conteúdo
-  - `/content/<id>/edit` - Editar conteúdo
-  - `/content/<id>/delete` - Deletar conteúdo
-- **Prefixo**: `/content`
-
-## Vantagens da Nova Estrutura
-
-### 1. **Modularidade**
-- Cada funcionalidade está isolada em seu próprio módulo
-- Facilita a manutenção e desenvolvimento de novas features
-- Permite trabalho em equipe mais eficiente
-
-### 2. **Escalabilidade**
-- Fácil adição de novos módulos
-- Estrutura preparada para crescimento do projeto
-- Separação clara de responsabilidades
-
-### 3. **Organização**
-- Templates organizados por funcionalidade
-- Código mais limpo e fácil de navegar
-- Redução de conflitos em desenvolvimento
-
-### 4. **Reutilização**
-- Template base comum a todos os módulos
-- Componentes reutilizáveis
-- Padrões consistentes
-
-## Migração das Rotas Antigas
-
-### Mapeamento de URLs:
-
-| Rota Antiga | Nova Rota | Módulo |
-|-------------|-----------|---------|
+| URL Antiga | URL Nova | Blueprint |
+|------------|----------|-----------|
 | `/` | `/` | main |
 | `/cad_users` | `/auth/register` | auth |
 | `/login` | `/auth/login` | auth |
@@ -172,6 +157,13 @@ app/
 - Configurações avançadas de perfil
 - Sistema de badges/conquistas
 
+### Comunidades (Melhorias Futuras)
+- Sistema de moderação de postagens
+- Relatórios de conteúdo inadequado
+- Configurações de privacidade avançadas
+- Sistema de convites para comunidades privadas
+- Estatísticas de atividade das comunidades
+
 ## Considerações Técnicas
 
 - **Flask-Login**: Mantido para autenticação
@@ -187,3 +179,4 @@ app/
 3. Adicionar funcionalidades de conteúdo avançadas
 4. Implementar sistema de notificações
 5. Adicionar testes automatizados para cada módulo
+6. Implementar sistema de relatórios para administradores

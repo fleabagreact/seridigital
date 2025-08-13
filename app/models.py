@@ -55,6 +55,86 @@ class Usuario(UserMixin, db.Model):
     def checar_senha(self, senha_plaintext):
         return check_password_hash(self._senha_hash, senha_plaintext)
     
+    # Métodos para gerenciar bloqueios de comunidades
+    def block_community(self, community_id, reason=None):
+        """Bloqueia uma comunidade para o usuário"""
+        from .models import CommunityBlock, Community
+        
+        # Verifica se já existe um bloqueio
+        existing_block = CommunityBlock.query.filter_by(
+            user_id=self.id, 
+            community_id=community_id
+        ).first()
+        
+        if existing_block:
+            return False, "Comunidade já está bloqueada"
+        
+        # Verifica se a comunidade existe
+        community = Community.query.get(community_id)
+        if not community:
+            return False, "Comunidade não encontrada"
+        
+        # Cria o bloqueio
+        block = CommunityBlock(
+            user_id=self.id,
+            community_id=community_id,
+            reason=reason
+        )
+        db.session.add(block)
+        db.session.commit()
+        
+        return True, "Comunidade bloqueada com sucesso"
+    
+    def unblock_community(self, community_id):
+        """Remove o bloqueio de uma comunidade"""
+        from .models import CommunityBlock
+        
+        block = CommunityBlock.query.filter_by(
+            user_id=self.id, 
+            community_id=community_id
+        ).first()
+        
+        if not block:
+            return False, "Comunidade não está bloqueada"
+        
+        db.session.delete(block)
+        db.session.commit()
+        
+        return True, "Bloqueio removido com sucesso"
+    
+    def is_community_blocked(self, community_id):
+        """Verifica se uma comunidade está bloqueada pelo usuário"""
+        from .models import CommunityBlock
+        
+        return CommunityBlock.query.filter_by(
+            user_id=self.id, 
+            community_id=community_id
+        ).first() is not None
+    
+    def get_blocked_communities(self):
+        """Retorna todas as comunidades bloqueadas pelo usuário"""
+        from .models import CommunityBlock
+        
+        blocks = CommunityBlock.query.filter_by(user_id=self.id).all()
+        return [block.community for block in blocks]
+    
+    def get_accessible_communities(self, include_filtered=False):
+        """Retorna todas as comunidades acessíveis ao usuário"""
+        from .models import Community, CommunityBlock
+        
+        # Busca todas as comunidades ativas
+        query = Community.query.filter(Community.status == 'active')
+        
+        # Exclui comunidades bloqueadas pelo usuário
+        blocked_ids = db.session.query(CommunityBlock.community_id).filter_by(user_id=self.id).subquery()
+        query = query.filter(~Community.id.in_(blocked_ids))
+        
+        # Filtra por conteúdo sensível se necessário
+        if not include_filtered:
+            query = query.filter(Community.is_filtered == False)
+        
+        return query.order_by(Community.created_at.asc()).all()
+    
     
 
 class Follower(db.Model):
@@ -98,12 +178,51 @@ class Community(db.Model):
     owner_id = db.Column('com_owner_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
     name = db.Column('com_name', db.String(255), nullable=False)  # nome da comunidade
     description = db.Column('com_description', db.Text)
-
+    status = db.Column('com_status', db.String(20), default='active', nullable=False)  # active, blocked, private
+    is_filtered = db.Column('com_is_filtered', db.Boolean, default=False, nullable=False)  # para conteúdo sensível
+    filter_reason = db.Column('com_filter_reason', db.String(255))  # motivo do filtro
     created_at = db.Column('com_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
 
     owner = db.relationship('Usuario', backref='owned_communities')
     posts = db.relationship('CommunityPost', backref='community', lazy='dynamic')
+    blocks = db.relationship('CommunityBlock', backref='community', lazy='dynamic')
 
+    def is_blocked(self):
+        """Verifica se a comunidade está bloqueada"""
+        return self.status == 'blocked'
+    
+    def is_private(self):
+        """Verifica se a comunidade é privada"""
+        return self.status == 'private'
+    
+    def is_filtered(self):
+        """Verifica se a comunidade está filtrada"""
+        return self.is_filtered
+    
+    def can_user_access(self, user_id):
+        """Verifica se um usuário pode acessar a comunidade"""
+        if self.is_blocked():
+            return False
+        if self.is_private() and self.owner_id != user_id:
+            return False
+        return True
+
+
+#Classe para gerenciar bloqueios de comunidades por usuários
+class CommunityBlock(db.Model):
+    __tablename__ = 'tb_community_blocks'
+
+    id = db.Column('blk_id', db.Integer, primary_key=True)
+    user_id = db.Column('blk_user_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
+    community_id = db.Column('blk_community_id', db.Integer, db.ForeignKey('tb_communities.com_id'), nullable=False)
+    reason = db.Column('blk_reason', db.String(255))  # motivo do bloqueio
+    created_at = db.Column('blk_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+
+    user = db.relationship('Usuario', backref='blocked_communities')
+    community = db.relationship('Community', backref='blocked_users')
+
+    def __repr__(self):
+        return f"<CommunityBlock {self.user_id} -> {self.community_id}>"
 
 class Comment(db.Model):
     __tablename__ = 'tb_comments'

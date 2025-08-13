@@ -1,20 +1,32 @@
 #Rota responsável por renderizar a página da comunidade e lidar com postagens
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify, flash
 from flask_login import login_required, current_user
-from ..models import db, CommunityPost, Community
+from ..models import db, CommunityPost, Community, CommunityBlock
 
 comunidade_bp = Blueprint('comunidade', __name__, url_prefix='/comunidade')
 
 @comunidade_bp.route('/', methods=['GET'])
 @login_required
 def comunidade():
-    comunidades = Community.query.order_by(Community.created_at.asc()).all()
+    # Usa o novo método para obter comunidades acessíveis
+    include_filtered = request.args.get('include_filtered', 'false').lower() == 'true'
+    comunidades = current_user.get_accessible_communities(include_filtered=include_filtered)
     return render_template('lista_comunidades.html', comunidades=comunidades)
 
 @comunidade_bp.route('/<int:community_id>', methods=['GET', 'POST'])
 @login_required
 def comunidade_users(community_id):
     comunidade = Community.query.get_or_404(community_id)
+    
+    # Verifica se o usuário pode acessar a comunidade
+    if not comunidade.can_user_access(current_user.id):
+        flash('Você não tem permissão para acessar esta comunidade.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
+    
+    # Verifica se a comunidade está bloqueada pelo usuário
+    if current_user.is_community_blocked(community_id):
+        flash('Esta comunidade está bloqueada para você.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
 
     if request.method == 'POST':
         texto = request.form.get('mensagem')
@@ -41,3 +53,110 @@ def criar_comunidade():
             return redirect(url_for('comunidade.comunidade_users', community_id=nova_comunidade.id))
 
     return render_template('criar_comunidade.html')
+
+# Novas rotas para bloqueio e filtragem
+@comunidade_bp.route('/block/<int:community_id>', methods=['POST'])
+@login_required
+def block_community(community_id):
+    """Bloqueia uma comunidade para o usuário atual"""
+    reason = request.form.get('reason', None)
+    
+    success, message = current_user.block_community(community_id, reason)
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': success, 'message': message})
+    
+    if success:
+        flash(message, 'success')
+    else:
+        flash(message, 'error')
+    
+    return redirect(url_for('comunidade.comunidade'))
+
+@comunidade_bp.route('/unblock/<int:community_id>', methods=['POST'])
+@login_required
+def unblock_community(community_id):
+    """Remove o bloqueio de uma comunidade"""
+    success, message = current_user.unblock_community(community_id)
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({'success': success, 'message': message})
+    
+    if success:
+        flash(message, 'success')
+    else:
+        flash(message, 'error')
+    
+    return redirect(url_for('comunidade.comunidade'))
+
+@comunidade_bp.route('/blocked', methods=['GET'])
+@login_required
+def blocked_communities():
+    """Lista todas as comunidades bloqueadas pelo usuário"""
+    blocked_communities = current_user.get_blocked_communities()
+    return render_template('comunidades_bloqueadas.html', comunidades=blocked_communities)
+
+# Rotas administrativas para gerenciar status das comunidades
+@comunidade_bp.route('/admin/block/<int:community_id>', methods=['POST'])
+@login_required
+def admin_block_community(community_id):
+    """Bloqueia uma comunidade (apenas administradores)"""
+    if not current_user.is_administrador():
+        flash('Acesso negado. Apenas administradores podem realizar esta ação.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
+    
+    comunidade = Community.query.get_or_404(community_id)
+    comunidade.status = 'blocked'
+    db.session.commit()
+    
+    flash(f'Comunidade "{comunidade.name}" foi bloqueada.', 'success')
+    return redirect(url_for('comunidade.comunidade'))
+
+@comunidade_bp.route('/admin/unblock/<int:community_id>', methods=['POST'])
+@login_required
+def admin_unblock_community(community_id):
+    """Desbloqueia uma comunidade (apenas administradores)"""
+    if not current_user.is_administrador():
+        flash('Acesso negado. Apenas administradores podem realizar esta ação.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
+    
+    comunidade = Community.query.get_or_404(community_id)
+    comunidade.status = 'active'
+    db.session.commit()
+    
+    flash(f'Comunidade "{comunidade.name}" foi desbloqueada.', 'success')
+    return redirect(url_for('comunidade.comunidade'))
+
+@comunidade_bp.route('/admin/filter/<int:community_id>', methods=['POST'])
+@login_required
+def admin_filter_community(community_id):
+    """Aplica filtro de conteúdo sensível (apenas administradores)"""
+    if not current_user.is_administrador():
+        flash('Acesso negado. Apenas administradores podem realizar esta ação.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
+    
+    comunidade = Community.query.get_or_404(community_id)
+    reason = request.form.get('reason', 'Conteúdo sensível')
+    
+    comunidade.is_filtered = True
+    comunidade.filter_reason = reason
+    db.session.commit()
+    
+    flash(f'Comunidade "{comunidade.name}" foi marcada como filtrada.', 'success')
+    return redirect(url_for('comunidade.comunidade'))
+
+@comunidade_bp.route('/admin/unfilter/<int:community_id>', methods=['POST'])
+@login_required
+def admin_unfilter_community(community_id):
+    """Remove filtro de conteúdo sensível (apenas administradores)"""
+    if not current_user.is_administrador():
+        flash('Acesso negado. Apenas administradores podem realizar esta ação.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
+    
+    comunidade = Community.query.get_or_404(community_id)
+    comunidade.is_filtered = False
+    comunidade.filter_reason = None
+    db.session.commit()
+    
+    flash(f'Comunidade "{comunidade.name}" teve o filtro removido.', 'success')
+    return redirect(url_for('comunidade.comunidade'))
