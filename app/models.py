@@ -120,18 +120,19 @@ class Usuario(UserMixin, db.Model):
     
     def get_accessible_communities(self, include_filtered=False):
         """Retorna todas as comunidades acessíveis ao usuário"""
+        from sqlalchemy import select
         from .models import Community, CommunityBlock
         
-        # Busca todas as comunidades ativas
+        # Base: somente comunidades ativas
         query = Community.query.filter(Community.status == 'active')
         
-        # Exclui comunidades bloqueadas pelo usuário
-        blocked_ids = db.session.query(CommunityBlock.community_id).filter_by(user_id=self.id).subquery()
-        query = query.filter(~Community.id.in_(blocked_ids))
+        # Excluir comunidades bloqueadas pelo usuário (subconsulta com select())
+        blocked_ids_select = select(CommunityBlock.community_id).where(CommunityBlock.user_id == self.id)
+        query = query.filter(~Community.id.in_(blocked_ids_select))
         
-        # Filtra por conteúdo sensível se necessário
+        # Filtrar conteúdo sensível, se aplicável
         if not include_filtered:
-            query = query.filter(Community.is_filtered == False)
+            query = query.filter(Community.is_filtered.is_(False))
         
         return query.order_by(Community.created_at.asc()).all()
     
@@ -195,10 +196,6 @@ class Community(db.Model):
         """Verifica se a comunidade é privada"""
         return self.status == 'private'
     
-    def is_filtered(self):
-        """Verifica se a comunidade está filtrada"""
-        return self.is_filtered
-    
     def can_user_access(self, user_id):
         """Verifica se um usuário pode acessar a comunidade"""
         if self.is_blocked():
@@ -216,10 +213,9 @@ class CommunityBlock(db.Model):
     user_id = db.Column('blk_user_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
     community_id = db.Column('blk_community_id', db.Integer, db.ForeignKey('tb_communities.com_id'), nullable=False)
     reason = db.Column('blk_reason', db.String(255))  # motivo do bloqueio
-    created_at = db.Column('blk_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+    created_at = db.Column('blk_created_at', db.DateTime, default=datetime.utcnow, server_default=db.func.current_timestamp(), nullable=False)
 
     user = db.relationship('Usuario', backref='blocked_communities')
-    community = db.relationship('Community', backref='blocked_users')
 
     def __repr__(self):
         return f"<CommunityBlock {self.user_id} -> {self.community_id}>"
