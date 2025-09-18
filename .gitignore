@@ -1,2 +1,50 @@
-/env
-/__pycache__
+# -*- Seridigital .gitignore -*-
+
+# Ambientes virtuais e variáveis de ambiente
+venv/
+.env
+.env.*
+.venv/
+
+# Bytecode, cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Migrações, banco de dados
+migrations/
+*.sqlite3
+*.db
+
+# Logs
+*.log
+
+# Arquivos de teste / cobertura de testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Artefatos de build, distribuição
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Arquivos temporários, backups
+*.tmp
+*.bak
+*.old
+
+# IDEs / editores
+.vscode/
+.idea/
+*.swp
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Scripts executáveis
+# Se houver scripts rodados localmente e gerados automaticamente
+/comandos_dev.sh
+createdb.py
