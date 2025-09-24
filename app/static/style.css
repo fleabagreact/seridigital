@@ -1,16 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* Core palette */
-    --color-ink: #0F1412;           /* near-black for text */
-    --color-paper: #FFFFFF;         /* white */
-    --color-bg-soft: #F2E9CE;       /* soft background */
-    --color-primary-700: #263530;   /* deep green */
-    --color-primary-600: #577343;   /* dark green */
-    --color-primary-500: #688C4F;   /* primary green */
-    --color-accent-500: #A67C49;    /* bronze accent */
+    --color-ink: #0F1412;
+    --color-paper: #FFFFFF;
+    --color-bg-soft: #F2E9CE;
+    --color-primary-700: #263530;
+    --color-primary-600: #577343;
+    --color-primary-500: #688C4F;
+    --color-accent-500: #A67C49;
 
-    /* Derivatives */
     --shadow-rgb: 0, 0, 0;
     --ink-muted: rgba(15, 20, 18, 0.8);
     --border-soft: rgba(15, 20, 18, 0.1);
@@ -56,7 +54,7 @@ main {
 }
 
 .navbar {
-    background: rgba(0, 0, 0, 0.9) !important; /* black navbar for strong contrast */
+    background: rgba(0, 0, 0, 0.9) !important;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
@@ -159,7 +157,6 @@ main {
     color: #fff;
 }
 
-/* Harmonize Bootstrap contextual classes with theme */
 .bg-primary {
     background-color: var(--color-primary-600) !important;
     color: #fff !important;
@@ -262,7 +259,6 @@ main {
     box-shadow: 0 10px 25px rgba(88, 122, 80, 0.35);
 }
 
-/* Formulários modernos */
 .form-control {
     border: 2px solid var(--border-soft);
     border-radius: 10px;
@@ -320,12 +316,10 @@ main {
     text-decoration: none;
 }
 
-/* Utility for forcing white text on primary/green surfaces */
 .text-on-primary {
     color: #fff !important;
 }
 
-/* Alertas personalizados */
 .alert {
     border: none;
     border-radius: 15px;

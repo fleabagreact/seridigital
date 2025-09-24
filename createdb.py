@@ -1,6 +1,8 @@
-from app import create_app
-from app import db  
-from app import models  
+from app import create_app, db
+from app.models import (
+    Usuario, Follower, PrivateMessage, Community, CommunityPost, CommunityBlock,
+    Comment, Like, WatchHistory, Rating, Content, Category, ContentCategory
+)
 
 app = create_app()
 

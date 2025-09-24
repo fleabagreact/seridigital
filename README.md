@@ -1,4 +1,5 @@
 # Seridigital
+
 Repositório oficial do projeto **Seridigital**, desenvolvido como parte da Prática Profissional dos alunos do IFRN Campus Caicó.
 
 ## Alunos
@@ -13,20 +14,23 @@ Repositório oficial do projeto **Seridigital**, desenvolvido como parte da Prá
 ## Funcionalidades Principais
 
 ### Sistema de Comunidades
+
 - ✅ Criação e gerenciamento de comunidades
 - ✅ Sistema de postagens
-- ✅ **Sistema de bloqueio individual de comunidades**
-- ✅ **Filtragem de conteúdo sensível**
-- ✅ **Bloqueio global por administradores**
+- ✅ Sistema de bloqueio individual de comunidades
+- ✅ Filtragem de conteúdo sensível
+- ✅ Bloqueio global por administradores
 - ✅ Controle de acesso baseado em permissões
 
 ### Sistema de Usuários
+
 - ✅ Autenticação e registro
 - ✅ Perfis de usuário
 - ✅ Sistema de seguidores
 - ✅ Mensagens privadas
 
 ### Sistema de Conteúdo
+
 - ✅ Gerenciamento de séries e filmes
 - ✅ Sistema de avaliações
 - ✅ Histórico de visualização

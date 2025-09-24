@@ -6,11 +6,13 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
+            <!-- Jumbotron de boas-vindas -->
             <div class="jumbotron bg-primary text-white p-5 rounded">
                 <h1 class="display-4">Bem-vindo ao SeriDigital</h1>
                 <p class="lead">Sua plataforma completa para descobrir, assistir e discutir sobre séries e conteúdo digital.</p>
             </div>
 
+            <!-- Formulário de busca -->
             <form action="{{ url_for('content.buscar_obra') }}" method="get" class="mb-4">
                 <div class="input-group">
                     <input 
@@ -25,6 +27,7 @@
                 </div>
             </form>
 
+            <!-- Lista de obras -->
             {% if obras %}
             <div class="list-group mb-5">
                 {% for obra in obras %}
@@ -38,51 +41,47 @@
                 <p class="text-muted">Nenhuma obra encontrada.</p>
             {% endif %}
 
-            
             {% if current_user.is_authenticated %}
+                <!-- Mensagem de usuário logado -->
                 <div class="alert alert-info mt-4">
                     <h4>Olá, {{ current_user.nome }}!</h4>
                     <p>Bem-vindo de volta ao SeriDigital. Explore nosso conteúdo e participe da comunidade!</p>
                 </div>
-                
+
+                <!-- Cards principais para usuário logado -->
                 <div class="row mt-4">
                     <div class="col-md-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="fas fa-user"></i> Meu Perfil
-                                </h5>
+                                <h5 class="card-title"><i class="fas fa-user"></i> Meu Perfil</h5>
                                 <p class="card-text">Visualize e edite suas informações pessoais.</p>
                                 <a href="{{ url_for('users.profile', user_id=current_user.id) }}" class="btn btn-primary">Ver Perfil</a>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="fas fa-play"></i> Conteúdo
-                                </h5>
+                                <h5 class="card-title"><i class="fas fa-play"></i> Conteúdo</h5>
                                 <p class="card-text">Explore séries, filmes e outros conteúdos disponíveis.</p>
                                 <a href="{{ url_for('content.list_content') }}" class="btn btn-primary">Ver Conteúdo</a>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="fas fa-comments"></i> Posts
-                                </h5>
+                                <h5 class="card-title"><i class="fas fa-comments"></i> Posts</h5>
                                 <p class="card-text">Veja e crie posts na comunidade.</p>
                                 <a href="{{ url_for('posts.list_posts') }}" class="btn btn-primary">Ver Posts</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
+                <!-- Ações rápidas e comunidade -->
                 <div class="row mt-4">
                     <div class="col-md-6 mb-3">
                         <div class="card">
@@ -95,7 +94,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6 mb-3">
                         <div class="card">
                             <div class="card-body">
@@ -119,39 +118,45 @@
                     </div>
                 </div>
             {% else %}
-                <div class="alert alert-warning mt-4">
-                    <h4>Você não está logado</h4>
-                    <p>Faça login ou cadastre-se para acessar todas as funcionalidades da plataforma.</p>
-                    <div class="mt-3">
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary me-2">Fazer Login</a>
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Criar Conta</a>
+                <!-- Usuário não logado: transformado em cards -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card border-warning mb-4 text-center">
+                            <div class="card-body">
+                                <h4 class="card-title text-warning">Você não está logado</h4>
+                                <p class="card-text">Faça login ou cadastre-se para acessar todas as funcionalidades da plataforma.</p>
+                                <div class="mt-3">
+                                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary me-2">Fazer Login</a>
+                                     <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">Criar Conta</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="row mt-5">
+
+                <!-- Cards informativos sobre Séries, Comunidade e Avaliações -->
+                <div class="row mt-3">
                     <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <div class="card-body text-center">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
                                 <i class="fas fa-tv fa-3x text-primary mb-3"></i>
                                 <h5 class="card-title">Séries e Filmes</h5>
                                 <p class="card-text">Descubra novos conteúdos e acompanhe seus favoritos.</p>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <div class="card-body text-center">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
                                 <i class="fas fa-users fa-3x text-success mb-3"></i>
                                 <h5 class="card-title">Comunidade</h5>
                                 <p class="card-text">Conecte-se com outros fãs e compartilhe opiniões.</p>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <div class="card-body text-center">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
                                 <i class="fas fa-star fa-3x text-warning mb-3"></i>
                                 <h5 class="card-title">Avaliações</h5>
                                 <p class="card-text">Avalie conteúdos e veja recomendações personalizadas.</p>
