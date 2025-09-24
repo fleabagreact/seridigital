@@ -22,12 +22,12 @@ O SeriDigital foi reorganizado em uma estrutura modular usando **Flask Blueprint
 
 ### Funcionalidades Implementadas
 
-✅ **Criação de Comunidades**: Usuários podem criar comunidades com nome e descrição
-✅ **Listagem de Comunidades**: Visualização de todas as comunidades disponíveis
-✅ **Postagens**: Sistema de postagens dentro das comunidades
-✅ **Sistema de Bloqueio**: Usuários podem bloquear comunidades individualmente
-✅ **Filtragem de Conteúdo**: Administradores podem marcar comunidades como filtradas
-✅ **Controle de Acesso**: Verificação de permissões baseada em status e bloqueios
+- ✅ **Criação de Comunidades**: Usuários podem criar comunidades com nome e descrição
+- ✅ **Listagem de Comunidades**: Visualização de todas as comunidades disponíveis
+- ✅ **Postagens**: Sistema de postagens dentro das comunidades
+- ✅ **Sistema de Bloqueio**: Usuários podem bloquear comunidades individualmente
+- ✅ **Filtragem de Conteúdo**: Administradores podem marcar comunidades como filtradas
+- ✅ **Controle de Acesso**: Verificação de permissões baseada em status e bloqueios
 
 ### Sistema de Bloqueio e Filtragem
 
