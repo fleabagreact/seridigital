@@ -11,16 +11,19 @@ O sistema de bloqueio e filtragem de comunidades foi implementado para proporcio
 **Descrição**: Permite que usuários bloqueiem comunidades específicas que não desejam visualizar.
 
 **Implementação**:
+
 - Tabela `tb_community_blocks` para armazenar bloqueios
 - Relacionamento muitos-para-muitos entre usuários e comunidades
 - Campo opcional para motivo do bloqueio
 
 **Rotas**:
+
 - `POST /comunidade/block/<community_id>` - Bloquear comunidade
 - `POST /comunidade/unblock/<community_id>` - Desbloquear comunidade
 - `GET /comunidade/blocked` - Listar comunidades bloqueadas
 
 **Exemplo de Uso**:
+
 ```python
 # Bloquear uma comunidade
 success, message = current_user.block_community(community_id, "Conteúdo inadequado")
@@ -39,15 +42,18 @@ blocked_communities = current_user.get_blocked_communities()
 **Descrição**: Permite que administradores marquem comunidades como contendo conteúdo sensível.
 
 **Implementação**:
+
 - Campo `is_filtered` na tabela `tb_communities`
 - Campo `filter_reason` para documentar o motivo
 - Controle via checkbox na interface
 
 **Rotas Administrativas**:
+
 - `POST /comunidade/admin/filter/<community_id>` - Marcar como filtrado
 - `POST /comunidade/admin/unfilter/<community_id>` - Remover filtro
 
 **Exemplo de Uso**:
+
 ```python
 # Verificar se comunidade está filtrada
 if community.is_filtered:
@@ -63,15 +69,18 @@ communities = current_user.get_accessible_communities(include_filtered=True)
 **Descrição**: Permite que administradores bloqueiem comunidades globalmente para todos os usuários.
 
 **Implementação**:
+
 - Campo `status` na tabela `tb_communities`
 - Valores possíveis: `active`, `blocked`, `private`
 - Controle de acesso baseado em status
 
 **Rotas Administrativas**:
+
 - `POST /comunidade/admin/block/<community_id>` - Bloquear globalmente
 - `POST /comunidade/admin/unblock/<community_id>` - Desbloquear globalmente
 
 **Exemplo de Uso**:
+
 ```python
 # Verificar status da comunidade
 if community.is_blocked():
@@ -99,6 +108,7 @@ ALTER TABLE tb_communities ADD COLUMN com_filter_reason VARCHAR(255);
 ```
 
 **Campos**:
+
 - `com_status`: Status da comunidade (`active`, `blocked`, `private`)
 - `com_is_filtered`: Se o conteúdo é filtrado (boolean)
 - `com_filter_reason`: Motivo do filtro (texto opcional)
@@ -118,6 +128,7 @@ CREATE TABLE tb_community_blocks (
 ```
 
 **Campos**:
+
 - `blk_id`: Identificador único do bloqueio
 - `blk_user_id`: ID do usuário que bloqueou
 - `blk_community_id`: ID da comunidade bloqueada
@@ -200,6 +211,7 @@ def comunidade():
 ```
 
 **Lógica**:
+
 1. Busca comunidades com status `active`
 2. Exclui comunidades bloqueadas pelo usuário
 3. Filtra por conteúdo sensível se necessário
@@ -225,6 +237,7 @@ def comunidade_users(community_id):
 ```
 
 **Lógica**:
+
 1. Verifica se a comunidade existe
 2. Verifica se o usuário tem permissão de acesso
 3. Verifica se a comunidade está bloqueada pelo usuário
@@ -317,4 +330,4 @@ def block_community(self, community_id, reason=None):
 2. **Notificações**: Alertas sobre comunidades bloqueadas/filtradas
 3. **API REST**: Endpoints para integração externa
 4. **Cache Redis**: Melhorar performance de listagens
-5. **Análise de Conteúdo**: Detecção automática de conteúdo sensível 
+5. **Análise de Conteúdo**: Detecção automática de conteúdo sensível

@@ -32,6 +32,7 @@ O SeriDigital foi reorganizado em uma estrutura modular usando **Flask Blueprint
 ### Sistema de Bloqueio e Filtragem
 
 #### Bloqueio Individual
+
 - **Funcionalidade**: Usuários podem bloquear comunidades que não desejam ver
 - **Implementação**: Tabela `tb_community_blocks` com relacionamento usuário-comunidade
 - **Rotas**:
@@ -40,11 +41,13 @@ O SeriDigital foi reorganizado em uma estrutura modular usando **Flask Blueprint
   - `GET /comunidade/blocked` - Listar comunidades bloqueadas
 
 #### Filtragem de Conteúdo
+
 - **Funcionalidade**: Administradores podem marcar comunidades como conteúdo sensível
 - **Implementação**: Campos `is_filtered` e `filter_reason` na tabela `tb_communities`
 - **Controle**: Checkbox para incluir/excluir conteúdo filtrado na listagem
 
 #### Bloqueio Global
+
 - **Funcionalidade**: Administradores podem bloquear comunidades globalmente
 - **Implementação**: Campo `status` na tabela `tb_communities` (active/blocked/private)
 - **Rotas Administrativas**:
@@ -56,6 +59,7 @@ O SeriDigital foi reorganizado em uma estrutura modular usando **Flask Blueprint
 ### Modelos de Dados
 
 #### Community (tb_communities)
+
 ```python
 - id: Identificador único
 - owner_id: ID do criador da comunidade
@@ -68,6 +72,7 @@ O SeriDigital foi reorganizado em uma estrutura modular usando **Flask Blueprint
 ```
 
 #### CommunityBlock (tb_community_blocks)
+
 ```python
 - id: Identificador único
 - user_id: ID do usuário que bloqueou
@@ -77,6 +82,7 @@ O SeriDigital foi reorganizado em uma estrutura modular usando **Flask Blueprint
 ```
 
 ### Métodos do Usuário
+
 ```python
 # Bloquear/desbloquear comunidades
 user.block_community(community_id, reason=None)
@@ -89,6 +95,7 @@ user.get_accessible_communities(include_filtered=False)
 ```
 
 ### Métodos da Comunidade
+
 ```python
 # Verificar status
 community.is_blocked()
@@ -112,6 +119,7 @@ community.can_user_access(user_id)
 ## Como Adicionar Novos Módulos
 
 1. **Criar o arquivo do blueprint**:
+
    ```python
    # app/blueprints/novo_modulo.py
    from flask import Blueprint
@@ -124,6 +132,7 @@ community.can_user_access(user_id)
    ```
 
 2. **Registrar no app principal**:
+
    ```python
    # app/__init__.py
    from .blueprints.novo_modulo import novo_modulo_bp
@@ -131,7 +140,8 @@ community.can_user_access(user_id)
    ```
 
 3. **Criar templates**:
-   ```
+
+   ```text
    app/templates/novo_modulo/
    ├── index.html
    └── ...
@@ -140,24 +150,28 @@ community.can_user_access(user_id)
 ## Funcionalidades Futuras Planejadas
 
 ### Posts
+
 - Sistema completo de posts da comunidade
 - Comentários e likes
 - Categorização e tags
 - Sistema de moderação
 
 ### Conteúdo
+
 - Sistema de avaliações e reviews
 - Recomendações personalizadas
 - Histórico de visualização
 - Categorias e filtros avançados
 
 ### Usuários
+
 - Sistema de seguir/seguidores
 - Mensagens privadas
 - Configurações avançadas de perfil
 - Sistema de badges/conquistas
 
 ### Comunidades (Melhorias Futuras)
+
 - Sistema de moderação de postagens
 - Relatórios de conteúdo inadequado
 - Configurações de privacidade avançadas
