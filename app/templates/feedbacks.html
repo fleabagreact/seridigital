@@ -18,25 +18,25 @@
 
     <form method="post" action="{{ url_for('feedback.enviar_feedback') }}">
         <div class="mb-3">
-            <label for="nome" class="form-label">Nome</label>
+            <label for="nome" class="form-label-white">Nome</label>
             <input type="text" class="form-control" id="nome" name="nome" required
                    value="{{ request.form.nome or '' }}">
         </div>
 
         <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
+            <label for="email" class="form-label-white">E-mail</label>
             <input type="email" class="form-control" id="email" name="email" required
                    value="{{ request.form.email or '' }}">
         </div>
 
         <div class="mb-3">
-            <label for="assunto" class="form-label">Assunto</label>
+            <label for="assunto" class="form-label-white">Assunto</label>
             <input type="text" class="form-control" id="assunto" name="assunto" required
                    value="{{ request.form.assunto or '' }}">
         </div>
 
         <div class="mb-3">
-            <label for="mensagem" class="form-label">Mensagem</label>
+            <label for="mensagem" class="form-label-white">Mensagem</label>
             <textarea class="form-control" id="mensagem" name="mensagem" rows="5" required>{{ request.form.mensagem or '' }}</textarea>
         </div>
 

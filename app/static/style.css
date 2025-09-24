@@ -259,6 +259,31 @@ main {
     box-shadow: 0 10px 25px rgba(88, 122, 80, 0.35);
 }
 
+.btn-outline-secondary {
+    background: var(--color-primary-600);
+    color: white;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--color-primary-500);
+    color: white;
+    box-shadow: 0 10px 25px rgba(88, 122, 80, 0.35);
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    color: var(--color-paper) !important;
+    font-weight: 700;
+}
+
+.text-muted {
+    color: var(--ink-muted) !important;
+}
+
+.text-muted-white {
+    color: var(--color-paper) !important;
+}
+
 .form-control {
     border: 2px solid var(--border-soft);
     border-radius: 10px;
@@ -279,7 +304,13 @@ main {
 
 .form-label {
     font-weight: 600;
-    color: var(--ink-muted);
+    color: var(--color-ink);
+    margin-bottom: 8px;
+}
+
+.form-label-white {
+    font-weight: 600;
+    color: var(--color-paper);
     margin-bottom: 8px;
 }
 
