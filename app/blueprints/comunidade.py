@@ -1,7 +1,7 @@
 #Rota responsável por renderizar a página da comunidade e lidar com postagens
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify, flash
 from flask_login import login_required, current_user
-from ..models import db, CommunityPost, Community, CommunityBlock
+from ..models import db, CommunityPost, Community, CommunityBlock, CommunityPostLike, CommunityPostComment
 
 comunidade_bp = Blueprint('comunidade', __name__, url_prefix='/comunidade')
 
@@ -36,8 +36,34 @@ def comunidade_users(community_id):
             db.session.commit()
             return redirect(url_for('comunidade.comunidade_users', community_id=comunidade.id))
 
-    mensagens = CommunityPost.query.filter_by(community_id=comunidade.id).order_by(CommunityPost.created_at.asc()).all()
+    mensagens = CommunityPost.query.filter_by(community_id=comunidade.id).order_by(CommunityPost.created_at.desc()).all()
     return render_template('comunidade.html', comunidade=comunidade, mensagens=mensagens)
+
+@comunidade_bp.route('/<int:community_id>/post/<int:post_id>/like', methods=['POST'])
+@login_required
+def like_post(community_id, post_id):
+    post = CommunityPost.query.filter_by(id=post_id, community_id=community_id).first_or_404()
+    existing = CommunityPostLike.query.filter_by(user_id=current_user.id, post_id=post.id).first()
+    if existing:
+        db.session.delete(existing)
+        db.session.commit()
+        return jsonify({'liked': False})
+    novo = CommunityPostLike(user_id=current_user.id, post_id=post.id)
+    db.session.add(novo)
+    db.session.commit()
+    return jsonify({'liked': True})
+
+@comunidade_bp.route('/<int:community_id>/post/<int:post_id>/comment', methods=['POST'])
+@login_required
+def comment_post(community_id, post_id):
+    post = CommunityPost.query.filter_by(id=post_id, community_id=community_id).first_or_404()
+    text = request.form.get('text', '').strip()
+    if not text:
+        return jsonify({'success': False, 'message': 'Comentário vazio'}), 400
+    comment = CommunityPostComment(user_id=current_user.id, post_id=post.id, text=text)
+    db.session.add(comment)
+    db.session.commit()
+    return jsonify({'success': True})
 
 @comunidade_bp.route('/criar', methods=['GET', 'POST'])
 @login_required

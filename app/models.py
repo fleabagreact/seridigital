@@ -237,6 +237,23 @@ class Like(db.Model):
     content_id = db.Column('lik_content_id', db.Integer, db.ForeignKey('tb_contents.cnt_id'), nullable=False)
     created_at = db.Column('lik_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
 
+class CommunityPostLike(db.Model):
+    __tablename__ = 'tb_community_post_likes'
+
+    id = db.Column('cpl_id', db.Integer, primary_key=True)
+    user_id = db.Column('cpl_user_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
+    post_id = db.Column('cpl_post_id', db.Integer, db.ForeignKey('tb_community_posts.post_id'), nullable=False)
+    created_at = db.Column('cpl_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+
+class CommunityPostComment(db.Model):
+    __tablename__ = 'tb_community_post_comments'
+
+    id = db.Column('cpc_id', db.Integer, primary_key=True)
+    user_id = db.Column('cpc_user_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
+    post_id = db.Column('cpc_post_id', db.Integer, db.ForeignKey('tb_community_posts.post_id'), nullable=False)
+    text = db.Column('cpc_text', db.Text, nullable=False)
+    created_at = db.Column('cpc_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+
 class WatchHistory(db.Model):
     __tablename__ = 'tb_watch_history'
 

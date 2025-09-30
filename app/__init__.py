@@ -13,6 +13,10 @@ def create_app():
     db.init_app(app)
     Migrate(app, db)
 
+    # Cria tabelas automaticamente em ambientes sem migração aplicada
+    with app.app_context():
+        db.create_all()
+
     # login
     login_manager.init_app(app)
 

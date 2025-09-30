@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Editar Post #{{ post_id }} - SeriDigital{% endblock %}
+{% block title %}Editar Post #{{ post.id }} - SeriDigital{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <div class="alert alert-info">
-                <h4>Funcionalidade em Desenvolvimento</h4>
-                <p>Você está tentando editar o post #{{ post_id }}. Esta funcionalidade será implementada em breve.</p>
-                <a href="{{ url_for('posts.list_posts') }}" class="btn btn-primary">Voltar aos Posts</a>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Editar Post</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="conteudo" class="form-label">Conteúdo</label>
+                            <textarea class="form-control" id="conteudo" name="conteudo" rows="6" required>{{ post.content }}</textarea>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('posts.view_post', post_id=post.id) }}" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

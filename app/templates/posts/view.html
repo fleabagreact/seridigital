@@ -1,15 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}Post #{{ post_id }} - SeriDigital{% endblock %}
+{% block title %}Post #{{ post.id }} - SeriDigital{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <div class="alert alert-info">
-                <h4>Funcionalidade em Desenvolvimento</h4>
-                <p>Você está tentando visualizar o post #{{ post_id }}. Esta funcionalidade será implementada em breve.</p>
-                <a href="{{ url_for('posts.list_posts') }}" class="btn btn-primary">Voltar aos Posts</a>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h4 class="mb-0">Post</h4>
+                        <small class="text-muted">{{ post.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                    </div>
+                    <p>{{ post.content }}</p>
+                    <div class="d-flex gap-2">
+                        {% if current_user.is_authenticated and (current_user.id == post.author_id or current_user.is_administrador()) %}
+                        <a href="{{ url_for('posts.edit_post', post_id=post.id) }}" class="btn btn-outline-primary btn-sm">Editar</a>
+                        <form method="POST" action="{{ url_for('posts.delete_post', post_id=post.id) }}" onsubmit="return confirm('Confirmar exclusão?')">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Excluir</button>
+                        </form>
+                        {% endif %}
+                        <a href="{{ url_for('posts.list_posts') }}" class="btn btn-secondary btn-sm">Voltar</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

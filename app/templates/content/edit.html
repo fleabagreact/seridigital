@@ -46,6 +46,14 @@
                                 <input type="url" class="form-control" id="thumbnail" name="thumbnail" value="{{ content.thumbnail or '' }}">
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Rápido de Imagem</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="local_image" accept="image/*">
+                                <button type="button" class="btn btn-outline-secondary" id="btn_upload_image">Enviar</button>
+                            </div>
+                            <div class="form-text">Ao enviar, o campo "URL da Imagem" será preenchido automaticamente.</div>
+                        </div>
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -65,4 +73,22 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('btn_upload_image').addEventListener('click', async function() {
+    const fileInput = document.getElementById('local_image');
+    if (!fileInput.files || !fileInput.files[0]) { return; }
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+    const res = await fetch("{{ url_for('content.upload_image') }}", { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.success) {
+        document.getElementById('thumbnail').value = data.url;
+    } else {
+        alert(data.message || 'Falha ao enviar imagem');
+    }
+});
+</script>
 {% endblock %}

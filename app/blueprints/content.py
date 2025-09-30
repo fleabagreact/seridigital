@@ -1,7 +1,9 @@
 # app/blueprints/content.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from ..models import Content, db
+import os
+from werkzeug.utils import secure_filename
 
 content_bp = Blueprint('content', __name__, url_prefix='/content')
 
@@ -44,6 +46,12 @@ def create_content():
         thumbnail = request.form.get('thumbnail')
         release_date = request.form.get('release_date')
         
+        # Validação de tipos permitidos
+        allowed_types = ['serie', 'filme', 'documentario', 'anime', 'novela']
+        if content_type not in allowed_types:
+            flash('Tipo de conteúdo inválido. Selecione um tipo válido.', 'danger')
+            return render_template('content/create.html')
+
         # Converte a data se fornecida
         from ..utils.helpers import parse_date
         release_date_obj = parse_date(release_date)
@@ -76,7 +84,12 @@ def edit_content(content_id):
     if request.method == 'POST':
         content.title = request.form.get('title')
         content.description = request.form.get('description')
-        content.type = request.form.get('type')
+        content_type = request.form.get('type')
+        allowed_types = ['serie', 'filme', 'documentario', 'anime', 'novela']
+        if content_type not in allowed_types:
+            flash('Tipo de conteúdo inválido. Selecione um tipo válido.', 'danger')
+            return render_template('content/edit.html', content=content)
+        content.type = content_type
         content.url = request.form.get('url')
         content.thumbnail = request.form.get('thumbnail')
         
@@ -91,6 +104,26 @@ def edit_content(content_id):
         return redirect(url_for('content.view_content', content_id=content_id))
     
     return render_template('content/edit.html', content=content)
+
+@content_bp.route('/upload-image', methods=['POST'])
+@login_required
+def upload_image():
+    """Upload rápido de imagem para conteúdo. Retorna URL pública."""
+    if 'image' not in request.files:
+        return jsonify({'success': False, 'message': 'Nenhum arquivo enviado.'}), 400
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'success': False, 'message': 'Arquivo inválido.'}), 400
+
+    filename = secure_filename(file.filename)
+    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'uploads')
+    os.makedirs(upload_dir, exist_ok=True)
+    save_path = os.path.join(upload_dir, filename)
+    file.save(save_path)
+
+    file_url = url_for('static', filename=f'uploads/{filename}', _external=False)
+    return jsonify({'success': True, 'url': file_url})
 
 @content_bp.route('/<int:content_id>/delete', methods=['POST'])
 @login_required
