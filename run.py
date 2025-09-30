@@ -7,7 +7,7 @@ app = create_app()
 def init_db():
     with app.app_context():
         db.create_all()
-        print("✅ Banco de dados criado/atualizado com sucesso!")
+        print("Banco de dados criado/atualizado com sucesso!")
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1].lower() in ['initdb', 'createdb', 'migratedb']:
