@@ -7,7 +7,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="mb-0">{{ comunidade.name }}</h2>
+                <h2 class="mb-0 text-dark">{{ comunidade.name }}</h2>
                 <div class="d-flex gap-2">
                     <a href="{{ url_for('comunidade.comunidade') }}" class="btn btn-outline-secondary">Sair</a>
                 </div>
@@ -74,8 +74,24 @@
         postContent.value = '';
     });
 
-    document.getElementById('postForm').addEventListener('submit', (e) => {
-        // submit padrão para criar o post
+    document.getElementById('postForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const res = await fetch(window.location.pathname, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: new URLSearchParams(formData)
+        });
+        if (res.redirected) {
+            window.location.href = res.url;
+            return;
+        }
+        if (res.ok) {
+            window.location.reload();
+        } else {
+            alert('Erro ao criar post.');
+        }
     });
 
     async function likePost(event, communityId, postId) {
