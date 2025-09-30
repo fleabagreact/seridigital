@@ -4,33 +4,35 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>{{ comunidade.name }}</h2>
-        <div class="d-flex gap-2">
-            <a href="{{ url_for('comunidade.comunidade') }}" class="btn btn-outline-secondary">Sair</a>
-        </div>
-    </div>
-
-    <p class="text-muted mb-4">{{ comunidade.description or 'Sem descrição.' }}</p>
-
-    <div class="d-flex justify-content-end mb-3">
-        <button id="createPostButton" class="btn btn-primary">Criar Post</button>
-    </div>
-
-    <div id="createPostModal" class="d-none fixed-top bg-black bg-opacity-50 d-flex justify-content-center align-items-center" style="height: 100vh;">
-        <div class="bg-white p-4 rounded" style="width: 100%; max-width: 640px;">
-            <h2 class="text-center">Criar Nova Postagem</h2>
-            <form method="POST" id="postForm">
-                <textarea name="mensagem" id="postContent" class="form-control my-3" placeholder="O que está em sua mente?" required></textarea>
-                <div class="d-flex justify-content-between">
-                    <button type="button" id="cancelPostButton" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" id="submitPostButton" class="btn btn-primary">Publicar</button>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">{{ comunidade.name }}</h2>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('comunidade.comunidade') }}" class="btn btn-outline-secondary">Sair</a>
                 </div>
-            </form>
-        </div>
-    </div>
+            </div>
 
-    <div id="postsContainer" class="mt-4">
+            <p class="text-muted mb-4">{{ comunidade.description or 'Sem descrição.' }}</p>
+
+            <div class="d-flex justify-content-end mb-3">
+                <button id="createPostButton" class="btn btn-primary">Criar Post</button>
+            </div>
+
+            <div id="createPostModal" class="d-none fixed-top bg-black bg-opacity-50 d-flex justify-content-center align-items-center" style="height: 100vh;">
+                <div class="bg-white p-4 rounded" style="width: 100%; max-width: 640px;">
+                    <h2 class="text-center">Criar Nova Postagem</h2>
+                    <form method="POST" id="postForm">
+                        <textarea name="mensagem" id="postContent" class="form-control my-3" placeholder="O que está em sua mente?" required></textarea>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" id="cancelPostButton" class="btn btn-secondary">Cancelar</button>
+                            <button type="submit" id="submitPostButton" class="btn btn-primary">Publicar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="postsContainer" class="mt-2">
         {% for msg in mensagens %}
         <div class="card mb-4">
             <div class="card-body">
@@ -49,6 +51,8 @@
             </div>
         </div>
         {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
