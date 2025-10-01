@@ -17,18 +17,49 @@ def list_posts():
 def create_post():
     """Cria um novo post"""
     if request.method == 'POST':
-        conteudo = request.form.get('conteudo')
-        community_id = request.form.get('community_id')
-        if not conteudo or not community_id:
-            flash('Conteúdo e comunidade são obrigatórios.', 'warning')
+        try:
+            conteudo = (request.form.get('conteudo') or '').strip()
+            community_id_raw = request.form.get('community_id')
+
+            if not conteudo:
+                flash('Conteúdo é obrigatório.', 'warning')
+                return redirect(url_for('posts.create_post'))
+
+            if not community_id_raw:
+                flash('Selecione uma comunidade.', 'warning')
+                return redirect(url_for('posts.create_post'))
+
+            try:
+                community_id = int(community_id_raw)
+            except (TypeError, ValueError):
+                flash('Comunidade inválida.', 'danger')
+                return redirect(url_for('posts.create_post'))
+
+            community = Community.query.get(community_id)
+            if not community:
+                flash('Comunidade não encontrada.', 'danger')
+                return redirect(url_for('posts.create_post'))
+
+            # Opcional: restringir post em comunidade bloqueada/privada
+            if not community.can_user_access(current_user.id):
+                flash('Você não tem acesso a esta comunidade.', 'danger')
+                return redirect(url_for('posts.create_post'))
+
+            post = CommunityPost(
+                content=conteudo,
+                author_id=current_user.id,
+                community_id=community_id
+            )
+            db.session.add(post)
+            db.session.commit()
+            flash('Post criado com sucesso!', 'success')
+            return redirect(url_for('posts.list_posts'))
+        except Exception:
+            db.session.rollback()
+            flash('Ocorreu um erro ao criar o post.', 'danger')
             return redirect(url_for('posts.create_post'))
-        post = CommunityPost(content=conteudo, author_id=current_user.id, community_id=int(community_id))
-        db.session.add(post)
-        db.session.commit()
-        flash('Post criado com sucesso!', 'success')
-        return redirect(url_for('posts.list_posts'))
-    
-    communities = Community.query.all()
+
+    communities = Community.query.order_by(Community.name.asc()).all()
     return render_template('posts/create.html', communities=communities)
 
 @posts_bp.route('/<int:post_id>')

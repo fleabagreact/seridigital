@@ -19,38 +19,25 @@
                 <button id="createPostButton" class="btn btn-primary">Criar Post</button>
             </div>
 
-            <div id="createPostModal" class="d-none fixed-top bg-black bg-opacity-50 d-flex justify-content-center align-items-center" style="height: 100vh;">
-                <div class="bg-white p-4 rounded" style="width: 100%; max-width: 640px;">
-                    <h2 class="text-center">Criar Nova Postagem</h2>
-                    <form method="POST" id="postForm">
-                        <textarea name="mensagem" id="postContent" class="form-control my-3" placeholder="O que está em sua mente?" required></textarea>
-                        <div class="d-flex justify-content-between">
-                            <button type="button" id="cancelPostButton" class="btn btn-secondary">Cancelar</button>
-                            <button type="submit" id="submitPostButton" class="btn btn-primary">Publicar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
             <div id="postsContainer" class="mt-2">
-        {% for msg in mensagens %}
-        <div class="card mb-4">
-            <div class="card-body">
-                <p class="mb-2">{{ msg.content }}</p>
-                <small class="text-muted">Postado por {{ msg.usuario.nome }} em {{ msg.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
-                <div class="d-flex justify-content-between mt-3 align-items-center">
-                    <form class="d-inline" onsubmit="return likePost(event, {{ comunidade.id }}, {{ msg.id }})">
-                        <button type="submit" class="btn btn-outline-primary btn-sm">Curtir/Descurtir</button>
-                    </form>
-                    <form class="input-group input-group-sm" style="max-width: 420px;" onsubmit="return commentPost(event, {{ comunidade.id }}, {{ msg.id }})">
-                        <input type="text" name="text" class="form-control comment-input" placeholder="Adicionar comentário">
-                        <button class="btn btn-outline-secondary comment-button" type="submit">Comentar</button>
-                    </form>
+                {% for msg in mensagens %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="mb-2">{{ msg.content }}</p>
+                        <small class="text-muted">Postado por {{ msg.usuario.nome }} em {{ msg.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                        <div class="d-flex justify-content-between mt-3 align-items-center">
+                            <form class="d-inline like-form" data-community-id="{{ comunidade.id }}" data-post-id="{{ msg.id }}">
+                                <button type="submit" class="btn btn-outline-primary btn-sm">Curtir/Descurtir</button>
+                            </form>
+                            <form class="input-group input-group-sm comment-form" style="max-width: 420px;" data-community-id="{{ comunidade.id }}" data-post-id="{{ msg.id }}">
+                                <input type="text" name="text" class="form-control comment-input" placeholder="Adicionar comentário">
+                                <button class="btn btn-outline-secondary comment-button" type="submit">Comentar</button>
+                            </form>
+                        </div>
+                        <div class="mt-3 comments"></div>
+                    </div>
                 </div>
-                <div class="mt-3 comments"></div>
-            </div>
-        </div>
-        {% endfor %}
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -59,55 +46,144 @@
 
 {% block extra_js %}
 <script>
-    const createPostButton = document.getElementById('createPostButton');
-    const createPostModal = document.getElementById('createPostModal');
-    const cancelPostButton = document.getElementById('cancelPostButton');
-    const submitPostButton = document.getElementById('submitPostButton');
-    const postContent = document.getElementById('postContent');
-
-    createPostButton.addEventListener('click', () => {
-        createPostModal.classList.remove('d-none');
-    });
-
-    cancelPostButton.addEventListener('click', () => {
-        createPostModal.classList.add('d-none');
-        postContent.value = '';
-    });
-
-    document.getElementById('postForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        const res = await fetch(window.location.pathname, {
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- cria estilo específico do modal (injetado no head) ---
+      const styleId = 'injected-create-post-modal-style';
+      if (!document.getElementById(styleId)) {
+        const s = document.createElement('style');
+        s.id = styleId;
+        s.textContent = `
+          #injectedCreatePostModal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.55);
+            z-index: 2147483647;
+            -webkit-overflow-scrolling: touch;
+          }
+          #injectedCreatePostModal.show { display: flex; }
+          #injectedCreatePostModal .dialog {
+            background: #fff;
+            width: 100%;
+            max-width: 640px;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+            position: relative;
+            z-index: 2147483648;
+            max-height: 85vh;
+            overflow: auto;
+          }
+          /* garante que nada na página "corte" o modal (se algum ancestor tiver overflow) */
+          html, body { height: 100%; }
+        `;
+        document.head.appendChild(s);
+      }
+    
+      // --- se já existir (por acaso), remove para evitar duplicata --- 
+      const existing = document.getElementById('injectedCreatePostModal');
+      if (existing) existing.remove();
+    
+      // --- cria o elemento do modal (HTML) ---
+      const modal = document.createElement('div');
+      modal.id = 'injectedCreatePostModal';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-hidden', 'true');
+      modal.innerHTML = `
+        <div class="dialog" role="document">
+          <h2 style="margin-top:0;margin-bottom:10px;">Criar Nova Postagem</h2>
+          <form id="injectedPostForm">
+            <textarea name="mensagem" id="injectedPostContent" class="form-control" placeholder="O que está em sua mente?" required style="min-height:90px;width:100%;resize:vertical;padding:.7rem;border-radius:.45rem;border:1px solid #e6e6e6;"></textarea>
+            <div style="display:flex;justify-content:space-between;gap:12px;margin-top:12px;">
+              <button type="button" id="injectedCancelBtn" class="btn btn-secondary">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Publicar</button>
+            </div>
+          </form>
+        </div>
+      `;
+    
+      // --- append no final do body (garante que estará acima de tudo) ---
+      document.body.appendChild(modal);
+    
+      // --- referências ---
+      const openButton = document.getElementById('createPostButton');
+      const cancelBtn = document.getElementById('injectedCancelBtn');
+      const postForm = document.getElementById('injectedPostForm');
+      const postTextarea = document.getElementById('injectedPostContent');
+    
+      // debug: lista elementos com z-index alto (ajuda a identificar bloqueadores)
+      const blockers = Array.from(document.querySelectorAll('body *')).filter(el => {
+        try {
+          const cs = window.getComputedStyle(el);
+          const z = cs.zIndex;
+          return z !== 'auto' && !isNaN(Number(z)) && Number(z) > 2000 && !el.closest('#injectedCreatePostModal');
+        } catch (e) { return false; }
+      });
+      if (blockers.length) console.info('[modal-debug] elementos com z-index > 2000:', blockers);
+    
+      // funções abrir/fechar
+      const openModal = () => {
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        // foco no textarea
+        setTimeout(()=> postTextarea.focus(), 50);
+      };
+      const closeModal = () => {
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        postTextarea.value = '';
+      };
+    
+      // evento do botão que abre (se existir)
+      if (openButton) {
+        openButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          openModal();
+        });
+      } else {
+        console.warn('[modal-debug] botão #createPostButton não encontrado.');
+      }
+    
+      // cancelar e clique fora
+      cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (e)=> {
+        if (e.key === 'Escape' && modal.classList.contains('show')) closeModal();
+      });
+    
+      // submit do form: mantém sua lógica (ajuste se necessário)
+      postForm.addEventListener('submit', async (evt) => {
+        evt.preventDefault();
+        const data = new URLSearchParams(new FormData(postForm));
+        try {
+          const res = await fetch(window.location.pathname, {
             method: 'POST',
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            body: new URLSearchParams(formData)
-        });
-        if (res.redirected) {
+            body: data
+          });
+          if (res.redirected) {
             window.location.href = res.url;
             return;
-        }
-        if (res.ok) {
+          }
+          if (res.ok) {
             window.location.reload();
-        } else {
+          } else {
             alert('Erro ao criar post.');
+          }
+        } catch (err) {
+          console.error('[modal-submit]', err);
+          alert('Erro de rede ao criar post.');
         }
+      });
+    
+      // --- pequena verificação final (mostra estilos computados) ---
+      console.log('[modal-debug] modal injetado e anexado a body. computed styles:', getComputedStyle(modal));
     });
-
-    async function likePost(event, communityId, postId) {
-        event.preventDefault();
-        const res = await fetch(`/comunidade/${communityId}/post/${postId}/like`, { method: 'POST' });
-        if (res.ok) { window.location.reload(); }
-        return false;
-    }
-
-    async function commentPost(event, communityId, postId) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        const res = await fetch(`/comunidade/${communityId}/post/${postId}/comment`, { method: 'POST', body: formData });
-        if (res.ok) { window.location.reload(); }
-        return false;
-    }
-</script>
+    </script>    
 {% endblock %}
