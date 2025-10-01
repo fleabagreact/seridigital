@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Conteúdo - SeriDigital{% endblock %}
+{% block title %}Obras - SeriDigital{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Catálogo de Conteúdo</h2>
+                <h2>Catálogo de Obras</h2>
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('content.create_content') }}" class="btn btn-primary">Adicionar Conteúdo</a>
+                    <a href="{{ url_for('content.create_content') }}" class="btn btn-primary">Adicionar Obra</a>
                 {% endif %}
             </div>
             
@@ -19,13 +19,11 @@
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card h-100">
                                 {% if content.thumbnail %}
-                                    <img src="{{ content.thumbnail }}" class="card-img-top" alt="{{ content.title }}" style="height: 200px; object-fit: cover;">
+                                    <img src="{{ content.thumbnail }}" class="card-img-top" alt="{{ content.title }}" style="height: 300px; object-fit: cover;">
                                 {% else %}
-                                    <button onclick="window.location.href='{{ url_for('content.view_content', content_id=content.id) }}'" class="btn p-0 border-0 w-100" style="height: 200px;">
-                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center h-100">
-                                            <i class="fas fa-play-circle fa-3x text-muted"></i>
-                                        </div>
-                                    </button>
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                                        <i class="fas fa-book fa-4x text-muted"></i>
+                                    </div>
                                 {% endif %}
                                 
                                 <div class="card-body d-flex flex-column">
@@ -35,6 +33,9 @@
                                         <span class="badge bg-primary">{{ content.type.title() }}</span>
                                         {% if content.release_date %}
                                             <span class="badge bg-secondary">{{ content.release_date.year }}</span>
+                                        {% endif %}
+                                        {% if content.file_type %}
+                                            <span class="badge bg-info">{{ content.file_type.upper() }}</span>
                                         {% endif %}
                                     </div>
                                     
@@ -55,12 +56,12 @@
                 </div>
             {% else %}
                 <div class="alert alert-info">
-                    <h4>Nenhum conteúdo encontrado</h4>
-                    <p>Ainda não há conteúdo cadastrado na plataforma.</p>
+                    <h4>Nenhuma obra encontrada</h4>
+                    <p>Ainda não há obras cadastradas na plataforma.</p>
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('content.create_content') }}" class="btn btn-primary">Seja o primeiro a adicionar conteúdo!</a>
+                        <a href="{{ url_for('content.create_content') }}" class="btn btn-primary">Seja o primeiro a adicionar uma obra!</a>
                     {% else %}
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Faça login para adicionar conteúdo</a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">Faça login para adicionar obras</a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -68,5 +69,3 @@
     </div>
 </div>
 {% endblock %}
-
-{% block extra_css %}{% endblock %}

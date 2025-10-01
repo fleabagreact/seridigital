@@ -294,10 +294,12 @@ class Content(db.Model):
     id = db.Column('cnt_id', db.Integer, primary_key=True)
     title = db.Column('cnt_title', db.String(255), nullable=False)
     description = db.Column('cnt_description', db.Text)
-    type = db.Column('cnt_type', db.String(50), nullable=False)  # ENUM substituído por String devido à falta de valores
+    type = db.Column('cnt_type', db.String(50), nullable=False)  # livro, manifesto
     release_date = db.Column('cnt_release_date', db.Date)
     thumbnail = db.Column('cnt_thumbnail', db.String(255))
     url = db.Column('cnt_url', db.String(255))
+    file_path = db.Column('cnt_file_path', db.String(500))  # caminho do arquivo PDF/EPUB
+    file_type = db.Column('cnt_file_type', db.String(10))  # pdf ou epub
     created_at = db.Column('cnt_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
 
     # Relacionamentos

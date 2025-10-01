@@ -9,7 +9,7 @@
             <!-- Jumbotron de boas-vindas -->
             <div class="jumbotron bg-primary text-white p-5 rounded">
                 <h1 class="display-4">Bem-vindo ao SeriDigital</h1>
-                <p class="lead">Sua plataforma completa para descobrir, assistir e discutir sobre séries e conteúdo digital.</p>
+                <p class="lead">Sua plataforma completa para descobrir, ler e discutir sobre livros e manifestos.</p>
             </div>
 
             <!-- Formulário de busca -->
@@ -63,9 +63,9 @@
                     <div class="col-md-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-play"></i> Conteúdo</h5>
-                                <p class="card-text">Explore séries, filmes e outros conteúdos disponíveis.</p>
-                                <a href="{{ url_for('content.list_content') }}" class="btn btn-primary">Ver Conteúdo</a>
+                                <h5 class="card-title"><i class="fas fa-book"></i> Obras</h5>
+                                <p class="card-text">Explore livros, manifestos e outras obras disponíveis.</p>
+                                <a href="{{ url_for('content.list_content') }}" class="btn btn-primary">Ver Obras</a>
                             </div>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                                 <h5 class="card-title">Ações Rápidas</h5>
                                 <div class="d-grid gap-2">
                                     <a href="{{ url_for('posts.create_post') }}" class="btn btn-success">Criar Post</a>
-                                    <a href="{{ url_for('content.create_content') }}" class="btn btn-info">Adicionar Conteúdo</a>
+                                    <a href="{{ url_for('content.create_content') }}" class="btn btn-info">Adicionar Obra</a>
                                 </div>
                             </div>
                         </div>
@@ -118,14 +118,14 @@
                     </div>
                 </div>
             {% else %}
-                <!-- Cards informativos sobre Séries, Comunidade e Avaliações -->
+                <!-- Cards informativos sobre Obras, Comunidade e Avaliações -->
                 <div class="row mt-3">
                     <div class="col-md-4 mb-3">
                         <div class="card text-center h-100">
                             <div class="card-body">
-                                <i class="fas fa-tv fa-3x text-primary mb-3"></i>
-                                <h5 class="card-title">Séries e Filmes</h5>
-                                <p class="card-text">Descubra novos conteúdos e acompanhe seus favoritos.</p>
+                                <i class="fas fa-book fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">Livros e Manifestos</h5>
+                                <p class="card-text">Descubra novas obras e acompanhe seus favoritos.</p>
                             </div>
                         </div>
                     </div>
@@ -134,7 +134,7 @@
                             <div class="card-body">
                                 <i class="fas fa-users fa-3x text-success mb-3"></i>
                                 <h5 class="card-title">Comunidade</h5>
-                                <p class="card-text">Conecte-se com outros fãs e compartilhe opiniões.</p>
+                                <p class="card-text">Conecte-se com outros leitores e compartilhe opiniões.</p>
                             </div>
                         </div>
                     </div>
@@ -143,7 +143,7 @@
                             <div class="card-body">
                                 <i class="fas fa-star fa-3x text-warning mb-3"></i>
                                 <h5 class="card-title">Avaliações</h5>
-                                <p class="card-text">Avalie conteúdos e veja recomendações personalizadas.</p>
+                                <p class="card-text">Avalie obras e veja recomendações personalizadas.</p>
                             </div>
                         </div>
                     </div>

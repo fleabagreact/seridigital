@@ -25,18 +25,11 @@
                     <div class="row">
                         <div class="col-md-4">
                             {% if content.thumbnail %}
-                                <a href="{{ content.url }}" target="_blank" class="thumbnail-overlay-link d-block position-relative rounded overflow-hidden">
-                                    <img src="{{ content.thumbnail }}" class="img-fluid rounded" alt="{{ content.title }}">
-                                    <span class="thumbnail-play-overlay d-flex align-items-center justify-content-center">
-                                        <i class="fas fa-play-circle"></i>
-                                    </span>
-                                </a>
+                                <img src="{{ content.thumbnail }}" class="img-fluid rounded" alt="{{ content.title }}">
                             {% else %}
-                                <a href="{{ content.url }}" target="_blank" class="thumbnail-overlay-link d-block position-relative rounded overflow-hidden" style="height: 300px;">
-                                    <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
-                                        <i class="fas fa-play-circle fa-5x text-muted"></i>
-                                    </div>
-                                </a>
+                                <div class="bg-light w-100 d-flex align-items-center justify-content-center rounded" style="height: 300px;">
+                                    <i class="fas fa-book fa-5x text-muted"></i>
+                                </div>
                             {% endif %}
                         </div>
                         
@@ -46,6 +39,9 @@
                                 {% if content.release_date %}
                                     <span class="badge bg-secondary fs-6">{{ content.release_date.year }}</span>
                                 {% endif %}
+                                {% if content.file_type %}
+                                    <span class="badge bg-info fs-6">{{ content.file_type.upper() }}</span>
+                                {% endif %}
                             </div>
                             
                             {% if content.description %}
@@ -53,9 +49,15 @@
                                 <p>{{ content.description }}</p>
                             {% endif %}
                             
-                            {# Removed the separate green Assistir button; the thumbnail is now clickable #}
+                            {% if content.file_path %}
+                                <div class="mt-4">
+                                    <a href="{{ url_for('content.download_content', content_id=content.id) }}" class="btn btn-success btn-lg">
+                                        <i class="fas fa-download"></i> Baixar Obra
+                                    </a>
+                                </div>
+                            {% endif %}
                             
-                            <div class="text-muted">
+                            <div class="text-muted mt-3">
                                 <small>Adicionado em {{ content.created_at.strftime('%d de %B de %Y às %H:%M') }}</small>
                             </div>
                         </div>
@@ -78,8 +80,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}

@@ -25,6 +25,13 @@ def create_app():
     # Cria tabelas automaticamente em ambientes sem migração aplicada
     with app.app_context():
         db.create_all()
+        
+        # Aplicar migração pendente para colunas file_path e file_type
+        try:
+            from .migrate_on_startup import apply_content_migration
+            apply_content_migration(db)
+        except Exception as e:
+            print(f"⚠️  Erro ao aplicar migração: {e}")
 
     # login
     login_manager.init_app(app)
