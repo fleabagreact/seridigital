@@ -135,8 +135,30 @@ main {
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
-    overflow: hidden;
+    overflow: visible;
     color: var(--color-ink);
+}
+
+/* Para cards com imagens que precisam de overflow hidden */
+.card-img-top {
+    border-radius: 15px 15px 0 0;
+}
+
+/* Garantir que dropdowns funcionem como modais e não sejam cortados */
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 1050 !important;
+    will-change: transform;
+}
+
+/* Garantir que o dropdown pai tenha contexto de posicionamento */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
 }
 
 .card:hover {
