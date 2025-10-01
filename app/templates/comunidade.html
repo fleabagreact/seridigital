@@ -34,7 +34,23 @@
                                 <button class="btn btn-outline-secondary comment-button" type="submit">Comentar</button>
                             </form>
                         </div>
-                        <div class="mt-3 comments"></div>
+                        <div class="mt-2">
+                            <small class="text-muted">Curtidas: <span class="like-count" data-post-id="{{ msg.id }}">{{ msg.likes_count() }}</span></small>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Comentários (<span class="comments-count" data-post-id="{{ msg.id }}">{{ msg.comments_count() }}</span>)</small>
+                        </div>
+                        <div class="mt-2 comments" data-post-id="{{ msg.id }}">
+                            {% for c in msg.get_comments() %}
+                            <div class="border rounded p-2 mb-2 comment-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ c.user.nome }}</strong>
+                                    <small class="text-muted">{{ c.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                                </div>
+                                <div>{{ c.text }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -184,6 +200,83 @@
     
       // --- pequena verificação final (mostra estilos computados) ---
       console.log('[modal-debug] modal injetado e anexado a body. computed styles:', getComputedStyle(modal));
+
+      // ==========================
+      // Likes e Comentários (AJAX)
+      // ==========================
+      const postsContainer = document.getElementById('postsContainer');
+      if (postsContainer) {
+        // Like submit
+        postsContainer.addEventListener('submit', async (e) => {
+          const form = e.target.closest('.like-form');
+          if (!form) return;
+          e.preventDefault();
+          const communityId = form.getAttribute('data-community-id');
+          const postId = form.getAttribute('data-post-id');
+          try {
+            const res = await fetch(`/comunidade/${communityId}/post/${postId}/like`, {
+              method: 'POST',
+              headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            if (!res.ok) throw new Error('Falha ao curtir');
+            const data = await res.json();
+            const countEl = document.querySelector(`.like-count[data-post-id="${postId}"]`);
+            if (countEl && typeof data.likes_count === 'number') {
+              countEl.textContent = String(data.likes_count);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        });
+
+        // Comment submit
+        postsContainer.addEventListener('submit', async (e) => {
+          const form = e.target.closest('.comment-form');
+          if (!form) return;
+          e.preventDefault();
+          const communityId = form.getAttribute('data-community-id');
+          const postId = form.getAttribute('data-post-id');
+          const input = form.querySelector('.comment-input');
+          const text = (input?.value || '').trim();
+          if (!text) return;
+          try {
+            const body = new URLSearchParams();
+            body.set('text', text);
+            const res = await fetch(`/comunidade/${communityId}/post/${postId}/comment`, {
+              method: 'POST',
+              headers: { 'X-Requested-With': 'XMLHttpRequest' },
+              body
+            });
+            if (!res.ok) throw new Error('Falha ao comentar');
+            const data = await res.json();
+            if (data && data.success) {
+              // Atualiza contagem
+              const countEl = document.querySelector(`.comments-count[data-post-id="${postId}"]`);
+              if (countEl && typeof data.comments_count === 'number') {
+                countEl.textContent = String(data.comments_count);
+              }
+              // Anexa novo comentário
+              const commentsContainer = document.querySelector(`.comments[data-post-id="${postId}"]`);
+              if (commentsContainer && data.comment) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'border rounded p-2 mb-2 comment-item';
+                wrapper.innerHTML = `
+                  <div class="d-flex justify-content-between">
+                    <strong>${data.comment.author}</strong>
+                    <small class="text-muted">${data.comment.created_at}</small>
+                  </div>
+                  <div></div>
+                `;
+                wrapper.querySelector('div:last-child').textContent = data.comment.text;
+                commentsContainer.prepend(wrapper);
+              }
+              if (input) input.value = '';
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      }
     });
     </script>    
 {% endblock %}

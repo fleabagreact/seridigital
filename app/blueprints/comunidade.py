@@ -47,11 +47,11 @@ def like_post(community_id, post_id):
     if existing:
         db.session.delete(existing)
         db.session.commit()
-        return jsonify({'liked': False})
+        return jsonify({'liked': False, 'likes_count': CommunityPostLike.query.filter_by(post_id=post.id).count()})
     novo = CommunityPostLike(user_id=current_user.id, post_id=post.id)
     db.session.add(novo)
     db.session.commit()
-    return jsonify({'liked': True})
+    return jsonify({'liked': True, 'likes_count': CommunityPostLike.query.filter_by(post_id=post.id).count()})
 
 @comunidade_bp.route('/<int:community_id>/post/<int:post_id>/comment', methods=['POST'])
 @login_required
@@ -63,7 +63,16 @@ def comment_post(community_id, post_id):
     comment = CommunityPostComment(user_id=current_user.id, post_id=post.id, text=text)
     db.session.add(comment)
     db.session.commit()
-    return jsonify({'success': True})
+    return jsonify({
+        'success': True,
+        'comments_count': CommunityPostComment.query.filter_by(post_id=post.id).count(),
+        'comment': {
+            'id': comment.id,
+            'author': current_user.nome,
+            'text': comment.text,
+            'created_at': comment.created_at.strftime('%d/%m/%Y %H:%M')
+        }
+    })
 
 @comunidade_bp.route('/criar', methods=['GET', 'POST'])
 @login_required

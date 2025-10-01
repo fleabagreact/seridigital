@@ -168,6 +168,19 @@ class CommunityPost(db.Model):
     usuario = db.relationship('Usuario', backref='community_posts')
     comunidade = db.relationship('Community', backref='community_posts')
 
+    # Helpers
+    def likes_count(self):
+        return CommunityPostLike.query.filter_by(post_id=self.id).count()
+
+    def comments_count(self):
+        return CommunityPostComment.query.filter_by(post_id=self.id).count()
+
+    def get_comments(self):
+        return (CommunityPostComment.query
+                .filter_by(post_id=self.id)
+                .order_by(CommunityPostComment.created_at.desc())
+                .all())
+
 
 
 #Classe para comunidades criadas por usuários 
@@ -253,6 +266,9 @@ class CommunityPostComment(db.Model):
     post_id = db.Column('cpc_post_id', db.Integer, db.ForeignKey('tb_community_posts.post_id'), nullable=False)
     text = db.Column('cpc_text', db.Text, nullable=False)
     created_at = db.Column('cpc_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+
+    # Relationship helpers for rendering
+    user = db.relationship('Usuario')
 
 class WatchHistory(db.Model):
     __tablename__ = 'tb_watch_history'
