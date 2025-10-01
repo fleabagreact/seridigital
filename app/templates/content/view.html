@@ -25,11 +25,18 @@
                     <div class="row">
                         <div class="col-md-4">
                             {% if content.thumbnail %}
-                                <img src="{{ content.thumbnail }}" class="img-fluid rounded" alt="{{ content.title }}">
+                                <a href="{{ content.url }}" target="_blank" class="thumbnail-overlay-link d-block position-relative rounded overflow-hidden">
+                                    <img src="{{ content.thumbnail }}" class="img-fluid rounded" alt="{{ content.title }}">
+                                    <span class="thumbnail-play-overlay d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-play-circle"></i>
+                                    </span>
+                                </a>
                             {% else %}
-                                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 300px;">
-                                    <i class="fas fa-play-circle fa-5x text-muted"></i>
-                                </div>
+                                <a href="{{ content.url }}" target="_blank" class="thumbnail-overlay-link d-block position-relative rounded overflow-hidden" style="height: 300px;">
+                                    <div class="bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-play-circle fa-5x text-muted"></i>
+                                    </div>
+                                </a>
                             {% endif %}
                         </div>
                         
@@ -46,13 +53,7 @@
                                 <p>{{ content.description }}</p>
                             {% endif %}
                             
-                            {% if content.url %}
-                                <div class="mb-3">
-                                    <a href="{{ content.url }}" target="_blank" class="btn btn-success">
-                                        <i class="fas fa-external-link-alt"></i> Assistir
-                                    </a>
-                                </div>
-                            {% endif %}
+                            {# Removed the separate green Assistir button; the thumbnail is now clickable #}
                             
                             <div class="text-muted">
                                 <small>Adicionado em {{ content.created_at.strftime('%d de %B de %Y às %H:%M') }}</small>
