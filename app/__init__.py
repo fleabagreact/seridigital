@@ -26,12 +26,12 @@ def create_app():
     with app.app_context():
         db.create_all()
         
-        # Aplicar migração pendente para colunas file_path e file_type
+        # Aplicar todas as migrações pendentes
         try:
-            from .migrate_on_startup import apply_content_migration
-            apply_content_migration(db)
+            from .migrate_on_startup import apply_all_migrations
+            apply_all_migrations(db)
         except Exception as e:
-            print(f"⚠️  Erro ao aplicar migração: {e}")
+            print(f"⚠️  Erro ao aplicar migrações: {e}")
         
         # Criar conta e comunidade padrão SeriDigital
         try:

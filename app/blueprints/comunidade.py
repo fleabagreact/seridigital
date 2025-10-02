@@ -255,7 +255,7 @@ def delete_post(community_id, post_id):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return jsonify({'success': False, 'message': 'Sem permissão'}), 403
         flash('Você não tem permissão para excluir este post.', 'danger')
-        return redirect(url_for('comunidade.ver_comunidade', community_id=community_id))
+        return redirect(url_for('comunidade.comunidade_users', community_id=community_id))
     
     try:
         # Deletar comentários associados
@@ -296,7 +296,7 @@ def delete_comment(comment_id):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return jsonify({'success': False, 'message': 'Sem permissão'}), 403
         flash('Você não tem permissão para excluir este comentário.', 'danger')
-        return redirect(url_for('comunidade.ver_comunidade', community_id=post.community_id))
+        return redirect(url_for('comunidade.comunidade_users', community_id=post.community_id))
     
     try:
         db.session.delete(comentario)

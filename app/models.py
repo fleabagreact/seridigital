@@ -257,6 +257,10 @@ class CommunityPostLike(db.Model):
     user_id = db.Column('cpl_user_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
     post_id = db.Column('cpl_post_id', db.Integer, db.ForeignKey('tb_community_posts.post_id'), nullable=False)
     created_at = db.Column('cpl_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Relationship helpers for rendering
+    user = db.relationship('Usuario')
+    post = db.relationship('CommunityPost')
 
 class CommunityPostComment(db.Model):
     __tablename__ = 'tb_community_post_comments'
@@ -269,6 +273,7 @@ class CommunityPostComment(db.Model):
 
     # Relationship helpers for rendering
     user = db.relationship('Usuario')
+    post = db.relationship('CommunityPost')
 
 class WatchHistory(db.Model):
     __tablename__ = 'tb_watch_history'
