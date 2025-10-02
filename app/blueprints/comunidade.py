@@ -13,6 +13,20 @@ def comunidade():
     comunidades = current_user.get_accessible_communities(include_filtered=include_filtered)
     return render_template('lista_comunidades.html', comunidades=comunidades)
 
+@comunidade_bp.route('/oficial', methods=['GET'])
+@login_required
+def comunidade_oficial():
+    """Redireciona diretamente para a comunidade oficial SeriDigital"""
+    # Buscar comunidade oficial
+    comunidade_oficial = Community.query.filter_by(name='SeriDigital').first()
+    
+    if not comunidade_oficial:
+        flash('Comunidade oficial não encontrada.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
+    
+    # Redirecionar para a comunidade
+    return redirect(url_for('comunidade.comunidade_users', community_id=comunidade_oficial.id))
+
 @comunidade_bp.route('/<int:community_id>', methods=['GET', 'POST'])
 @login_required
 def comunidade_users(community_id):
@@ -88,6 +102,37 @@ def criar_comunidade():
             return redirect(url_for('comunidade.comunidade_users', community_id=nova_comunidade.id))
 
     return render_template('criar_comunidade.html')
+
+@comunidade_bp.route('/delete/<int:community_id>', methods=['POST'])
+@login_required
+def delete_community(community_id):
+    """Deleta uma comunidade (apenas o criador)"""
+    comunidade = Community.query.get_or_404(community_id)
+    
+    # Verificar se o usuário atual é o dono da comunidade
+    if comunidade.owner_id != current_user.id:
+        flash('Acesso negado. Apenas o criador da comunidade pode apagá-la.', 'error')
+        return redirect(url_for('comunidade.comunidade'))
+    
+    community_name = comunidade.name
+    
+    try:
+        # Deletar todos os posts relacionados (e seus likes/comentários serão deletados em cascata)
+        CommunityPost.query.filter_by(community_id=community_id).delete()
+        
+        # Deletar todos os bloqueios relacionados à comunidade
+        CommunityBlock.query.filter_by(community_id=community_id).delete()
+        
+        # Deletar a comunidade
+        db.session.delete(comunidade)
+        db.session.commit()
+        
+        flash(f'Comunidade "{community_name}" foi apagada com sucesso.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao apagar comunidade: {str(e)}', 'error')
+    
+    return redirect(url_for('comunidade.comunidade'))
 
 # Novas rotas para bloqueio e filtragem
 @comunidade_bp.route('/block/<int:community_id>', methods=['POST'])

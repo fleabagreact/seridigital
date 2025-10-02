@@ -69,14 +69,26 @@
                                                             <i class="fas fa-sign-in-alt"></i> Entrar
                                                         </a>
                                                     </li>
-                                                    <li>
-                                                        <form method="POST" action="{{ url_for('comunidade.block_community', community_id=comunidade.id) }}" style="display: inline;">
-                                                            <button type="submit" class="dropdown-item text-danger" 
-                                                                    onclick="return confirm('Tem certeza que deseja bloquear esta comunidade?')">
-                                                                <i class="fas fa-ban"></i> Bloquear
-                                                            </button>
-                                                        </form>
-                                                    </li>
+                                                    {% if comunidade.owner_id == current_user.id %}
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <form method="POST" action="{{ url_for('comunidade.delete_community', community_id=comunidade.id) }}" style="display: inline;">
+                                                                <button type="submit" class="dropdown-item text-danger" 
+                                                                        onclick="return confirm('Tem certeza que deseja APAGAR esta comunidade? Esta ação é IRREVERSÍVEL e todos os posts serão perdidos!')">
+                                                                    <i class="fas fa-trash"></i> Apagar Comunidade
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    {% else %}
+                                                        <li>
+                                                            <form method="POST" action="{{ url_for('comunidade.block_community', community_id=comunidade.id) }}" style="display: inline;">
+                                                                <button type="submit" class="dropdown-item text-warning" 
+                                                                        onclick="return confirm('Tem certeza que deseja bloquear esta comunidade?')">
+                                                                    <i class="fas fa-ban"></i> Bloquear
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    {% endif %}
                                                     {% if current_user.is_administrador() %}
                                                         <li><hr class="dropdown-divider"></li>
                                                         <li>

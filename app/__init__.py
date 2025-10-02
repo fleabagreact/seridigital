@@ -32,6 +32,13 @@ def create_app():
             apply_content_migration(db)
         except Exception as e:
             print(f"⚠️  Erro ao aplicar migração: {e}")
+        
+        # Criar conta e comunidade padrão SeriDigital
+        try:
+            from .init_default_data import create_default_account_and_community
+            create_default_account_and_community()
+        except Exception as e:
+            print(f"⚠️  Erro ao criar dados padrão: {e}")
 
     # login
     login_manager.init_app(app)

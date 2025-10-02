@@ -166,7 +166,7 @@ class CommunityPost(db.Model):
     created_at = db.Column('post_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
 
     usuario = db.relationship('Usuario', backref='community_posts')
-    comunidade = db.relationship('Community', backref='community_posts')
+    comunidade = db.relationship('Community', back_populates='posts')
 
     # Helpers
     def likes_count(self):
@@ -198,7 +198,7 @@ class Community(db.Model):
     created_at = db.Column('com_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
 
     owner = db.relationship('Usuario', backref='owned_communities')
-    posts = db.relationship('CommunityPost', backref='community', lazy='dynamic')
+    posts = db.relationship('CommunityPost', back_populates='comunidade', lazy='dynamic')
     blocks = db.relationship('CommunityBlock', backref='community', lazy='dynamic')
 
     def is_blocked(self):
