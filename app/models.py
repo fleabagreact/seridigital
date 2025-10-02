@@ -35,7 +35,7 @@ class Usuario(UserMixin, db.Model):
     comentarios = db.relationship('Comment', backref='user', lazy='dynamic')
     likes = db.relationship('Like', backref='user', lazy='dynamic')
     historico_assistido = db.relationship('WatchHistory', backref='user', lazy='dynamic')
-    avaliacoes = db.relationship('Rating', backref='user', lazy='dynamic')
+    avaliacoes = db.relationship('Rating', back_populates='usuario', lazy='dynamic')
 
     def __repr__(self):
         return f"<Usuario {self.email}>"
@@ -290,7 +290,7 @@ class Rating(db.Model):
     created_at = db.Column('rat_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
     
     # Relacionamento com usuário
-    usuario = db.relationship('Usuario', backref='ratings', lazy=True)
+    usuario = db.relationship('Usuario', back_populates='avaliacoes', lazy=True)
 
 class Content(db.Model):
     __tablename__ = 'tb_contents'
