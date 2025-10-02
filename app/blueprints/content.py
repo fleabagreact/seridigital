@@ -29,11 +29,16 @@ def list_content():
 @content_bp.route('/buscar', methods=['GET'])
 @login_required
 def buscar_obra():
-    termo = request.args.get('q', '')  # captura o parâmetro de busca 'q' da URL
+    termo = request.args.get('q', '').strip()  # captura o parâmetro de busca 'q' da URL
 
     if termo:
-        # Exemplo simples: busca obras cujo título contenha o termo (case-insensitive)
-        resultados = Content.query.filter(Content.title.ilike(f'%{termo}%')).all()
+        # Busca mais abrangente: título OU descrição
+        resultados = Content.query.filter(
+            db.or_(
+                Content.title.ilike(f'%{termo}%'),
+                Content.description.ilike(f'%{termo}%')
+            )
+        ).order_by(Content.created_at.desc()).all()
     else:
         resultados = []
 
