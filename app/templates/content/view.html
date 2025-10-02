@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3>{{ content.title }}</h3>
+                        <h3 style="color: white;">{{ content.title }}</h3>
                         {% if current_user.is_authenticated %}
                             <div class="btn-group" role="group">
                                 <a href="{{ url_for('content.edit_content', content_id=content.id) }}" 
@@ -96,7 +96,7 @@
             <!-- Sistema de Avaliações e Comentários -->
             <div class="card mt-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Avaliações e Comentários</h5>
+                    <h5 class="mb-0" style="color: white;">Avaliações e Comentários</h5>
                     {% if avg_rating %}
                         <div class="d-flex align-items-center">
                             <div class="rating-stars me-2">
