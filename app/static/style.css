@@ -625,3 +625,34 @@ h1, h2, h3, h4, h5, h6 {
     color: #dc3545;
     margin-left: 5px;
 }
+
+/* Estilos personalizados para botões de excluir */
+.btn-danger {
+    background: #dc3545 !important;
+    color: white !important;
+    border: 2px solid #dc3545 !important;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.35);
+}
+
+.btn-danger:hover {
+    background: white !important;
+    color: #dc3545 !important;
+    border: 2px solid #dc3545 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(220, 53, 69, 0.5);
+}
+
+.btn-outline-danger {
+    background: #dc3545 !important;
+    color: white !important;
+    border: 2px solid #dc3545 !important;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.35);
+}
+
+.btn-outline-danger:hover {
+    background: white !important;
+    color: #dc3545 !important;
+    border: 2px solid #dc3545 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(220, 53, 69, 0.5);
+}
