@@ -18,12 +18,33 @@
                     {% for content in contents %}
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card h-100">
-                                {% if content.thumbnail %}
-                                    <img src="{{ content.thumbnail }}" class="card-img-top" alt="{{ content.title }}" style="height: 300px; object-fit: cover;">
+                                {% if content.url %}
+                                    <!-- Thumbnail com play icon se tiver URL do YouTube -->
+                                    <a href="{{ content.url }}" target="_blank" class="text-decoration-none">
+                                        <div class="obra-thumbnail-container" style="border-radius: 0;">
+                                            {% if content.thumbnail %}
+                                                <img src="{{ content.thumbnail }}" class="card-img-top" alt="{{ content.title }}" style="height: 300px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                                                    <i class="fas fa-book fa-4x text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                            <div class="obra-thumbnail-overlay">
+                                                <div class="obra-play-icon">
+                                                    <i class="fas fa-play"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 {% else %}
-                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
-                                        <i class="fas fa-book fa-4x text-muted"></i>
-                                    </div>
+                                    <!-- Apenas thumbnail sem play icon -->
+                                    {% if content.thumbnail %}
+                                        <img src="{{ content.thumbnail }}" class="card-img-top" alt="{{ content.title }}" style="height: 300px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                                            <i class="fas fa-book fa-4x text-muted"></i>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
                                 
                                 <div class="card-body d-flex flex-column">

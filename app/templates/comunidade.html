@@ -23,8 +23,20 @@
                 {% for msg in mensagens %}
                 <div class="card mb-4">
                     <div class="card-body">
-                        <p class="mb-2">{{ msg.content }}</p>
-                        <small class="text-muted">Postado por {{ msg.usuario.nome }} em {{ msg.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                <p class="mb-2">{{ msg.content }}</p>
+                                <small class="text-muted">Postado por {{ msg.usuario.nome }} em {{ msg.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                            </div>
+                            {% if current_user.is_authenticated and (current_user.id == msg.user_id or current_user.is_admin or current_user.id == comunidade.owner_id) %}
+                                <button class="btn btn-sm btn-outline-danger delete-post-btn" 
+                                        data-community-id="{{ comunidade.id }}" 
+                                        data-post-id="{{ msg.id }}"
+                                        title="Excluir post">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            {% endif %}
+                        </div>
                         <div class="d-flex justify-content-between mt-3 align-items-center">
                             <form class="d-inline like-form" data-community-id="{{ comunidade.id }}" data-post-id="{{ msg.id }}">
                                 <button type="submit" class="btn btn-outline-primary btn-sm">Curtir/Descurtir</button>
@@ -43,11 +55,21 @@
                         <div class="mt-2 comments" data-post-id="{{ msg.id }}">
                             {% for c in msg.get_comments() %}
                             <div class="border rounded p-2 mb-2 comment-item">
-                                <div class="d-flex justify-content-between">
-                                    <strong>{{ c.user.nome }}</strong>
-                                    <small class="text-muted">{{ c.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <strong>{{ c.user.nome }}</strong>
+                                        <small class="text-muted ms-2">{{ c.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                                        <div class="mt-1">{{ c.text }}</div>
+                                    </div>
+                                    {% if current_user.is_authenticated and (current_user.id == c.user_id or current_user.is_admin or current_user.id == comunidade.owner_id) %}
+                                        <button class="btn btn-sm btn-outline-danger delete-comment-btn" 
+                                                data-comment-id="{{ c.id }}"
+                                                data-post-id="{{ msg.id }}"
+                                                title="Excluir comentário">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    {% endif %}
                                 </div>
-                                <div>{{ c.text }}</div>
                             </div>
                             {% endfor %}
                         </div>
@@ -277,6 +299,75 @@
           }
         });
       }
+      
+      // --- Excluir post ---
+      postsContainer.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.delete-post-btn');
+        if (!btn) return;
+        
+        if (!confirm('Tem certeza que deseja excluir este post?')) return;
+        
+        const communityId = btn.getAttribute('data-community-id');
+        const postId = btn.getAttribute('data-post-id');
+        
+        try {
+          const res = await fetch(`/comunidade/${communityId}/post/${postId}/delete`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          });
+          
+          if (!res.ok) throw new Error('Falha ao excluir post');
+          
+          const data = await res.json();
+          if (data && data.success) {
+            // Remove o card do post
+            const card = btn.closest('.card');
+            if (card) card.remove();
+            alert('Post excluído com sucesso!');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Erro ao excluir post');
+        }
+      });
+      
+      // --- Excluir comentário ---
+      postsContainer.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.delete-comment-btn');
+        if (!btn) return;
+        
+        if (!confirm('Tem certeza que deseja excluir este comentário?')) return;
+        
+        const commentId = btn.getAttribute('data-comment-id');
+        const postId = btn.getAttribute('data-post-id');
+        
+        try {
+          const res = await fetch(`/comunidade/comment/${commentId}/delete`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+          });
+          
+          if (!res.ok) throw new Error('Falha ao excluir comentário');
+          
+          const data = await res.json();
+          if (data && data.success) {
+            // Remove o comentário
+            const commentItem = btn.closest('.comment-item');
+            if (commentItem) commentItem.remove();
+            
+            // Atualiza contagem
+            const countEl = document.querySelector(`.comments-count[data-post-id="${postId}"]`);
+            if (countEl && typeof data.comments_count === 'number') {
+              countEl.textContent = String(data.comments_count);
+            }
+            
+            alert('Comentário excluído com sucesso!');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Erro ao excluir comentário');
+        }
+      });
     });
     </script>    
 {% endblock %}

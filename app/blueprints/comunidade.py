@@ -240,3 +240,79 @@ def admin_unfilter_community(community_id):
     
     flash(f'Comunidade "{comunidade.name}" teve o filtro removido.', 'success')
     return redirect(url_for('comunidade.comunidade'))
+
+@comunidade_bp.route('/<int:community_id>/post/<int:post_id>/delete', methods=['POST'])
+@login_required
+def delete_post(community_id, post_id):
+    """Excluir post de uma comunidade"""
+    from flask import jsonify
+    
+    post = CommunityPost.query.get_or_404(post_id)
+    comunidade = Community.query.get_or_404(community_id)
+    
+    # Verificar permissão: autor do post, admin ou dono da comunidade
+    if current_user.id != post.user_id and not current_user.is_admin and current_user.id != comunidade.owner_id:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Sem permissão'}), 403
+        flash('Você não tem permissão para excluir este post.', 'danger')
+        return redirect(url_for('comunidade.ver_comunidade', community_id=community_id))
+    
+    try:
+        # Deletar comentários associados
+        CommunityPostComment.query.filter_by(post_id=post_id).delete()
+        
+        # Deletar likes associados
+        CommunityPostLike.query.filter_by(post_id=post_id).delete()
+        
+        # Deletar o post
+        db.session.delete(post)
+        db.session.commit()
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': True, 'message': 'Post excluído'})
+        
+        flash('Post excluído com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': str(e)}), 500
+        flash(f'Erro ao excluir post: {str(e)}', 'danger')
+    
+    return redirect(url_for('comunidade.ver_comunidade', community_id=community_id))
+
+@comunidade_bp.route('/comment/<int:comment_id>/delete', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    """Excluir comentário de um post"""
+    from flask import jsonify
+    
+    comentario = CommunityPostComment.query.get_or_404(comment_id)
+    post_id = comentario.post_id
+    post = CommunityPost.query.get(post_id)
+    comunidade = Community.query.get(post.community_id) if post else None
+    
+    # Verificar permissão: autor do comentário, admin ou dono da comunidade
+    if current_user.id != comentario.user_id and not current_user.is_admin and (not comunidade or current_user.id != comunidade.owner_id):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Sem permissão'}), 403
+        flash('Você não tem permissão para excluir este comentário.', 'danger')
+        return redirect(url_for('comunidade.ver_comunidade', community_id=post.community_id))
+    
+    try:
+        db.session.delete(comentario)
+        db.session.commit()
+        
+        # Contar comentários restantes
+        comments_count = CommunityPostComment.query.filter_by(post_id=post_id).count()
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': True, 'message': 'Comentário excluído', 'comments_count': comments_count})
+        
+        flash('Comentário excluído com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': str(e)}), 500
+        flash(f'Erro ao excluir comentário: {str(e)}', 'danger')
+    
+    return redirect(url_for('comunidade.ver_comunidade', community_id=post.community_id))

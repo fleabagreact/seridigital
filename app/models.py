@@ -285,8 +285,12 @@ class Rating(db.Model):
     id = db.Column('rat_id', db.Integer, primary_key=True)
     user_id = db.Column('rat_user_id', db.Integer, db.ForeignKey('tb_users.usr_id'), nullable=False)
     content_id = db.Column('rat_content_id', db.Integer, db.ForeignKey('tb_contents.cnt_id'), nullable=False)
-    rating = db.Column('rat_rating', db.Integer, nullable=False)
+    rating = db.Column('rat_rating', db.Integer, nullable=False)  # 1-5 estrelas
+    review = db.Column('rat_review', db.Text)  # Comentário opcional
     created_at = db.Column('rat_created_at', db.DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Relacionamento com usuário
+    usuario = db.relationship('Usuario', backref='ratings', lazy=True)
 
 class Content(db.Model):
     __tablename__ = 'tb_contents'

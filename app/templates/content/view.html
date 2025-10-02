@@ -11,11 +11,18 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h3>{{ content.title }}</h3>
                         {% if current_user.is_authenticated %}
-                            <div class="btn-group">
-                                <a href="{{ url_for('content.edit_content', content_id=content.id) }}" class="btn btn-outline-primary btn-sm">Editar</a>
-                                <form method="POST" action="{{ url_for('content.delete_content', content_id=content.id) }}" style="display: inline;" 
-                                      onsubmit="return confirm('Tem certeza que deseja deletar este conteúdo?')">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Deletar</button>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('content.edit_content', content_id=content.id) }}" 
+                                   class="btn btn-primary">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <button type="button" class="btn btn-danger" 
+                                        onclick="if(confirm('Tem certeza que deseja excluir esta obra?')) document.getElementById('delete-form-{{ content.id }}').submit();">
+                                    <i class="fas fa-trash-alt"></i> Excluir
+                                </button>
+                                <form id="delete-form-{{ content.id }}" method="POST" 
+                                      action="{{ url_for('content.delete_content', content_id=content.id) }}" 
+                                      style="display: none;">
                                 </form>
                             </div>
                         {% endif %}
@@ -24,12 +31,33 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            {% if content.thumbnail %}
-                                <img src="{{ content.thumbnail }}" class="img-fluid rounded" alt="{{ content.title }}">
+                            {% if content.url %}
+                                <!-- Thumbnail com play icon se tiver URL do YouTube -->
+                                <a href="{{ content.url }}" target="_blank" class="text-decoration-none">
+                                    <div class="obra-thumbnail-container">
+                                        {% if content.thumbnail %}
+                                            <img src="{{ content.thumbnail }}" class="img-fluid" alt="{{ content.title }}">
+                                        {% else %}
+                                            <div class="bg-light w-100 d-flex align-items-center justify-content-center" style="height: 300px;">
+                                                <i class="fas fa-book fa-5x text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="obra-thumbnail-overlay">
+                                            <div class="obra-play-icon">
+                                                <i class="fas fa-play"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
                             {% else %}
-                                <div class="bg-light w-100 d-flex align-items-center justify-content-center rounded" style="height: 300px;">
-                                    <i class="fas fa-book fa-5x text-muted"></i>
-                                </div>
+                                <!-- Apenas thumbnail sem play icon -->
+                                {% if content.thumbnail %}
+                                    <img src="{{ content.thumbnail }}" class="img-fluid rounded" alt="{{ content.title }}">
+                                {% else %}
+                                    <div class="bg-light w-100 d-flex align-items-center justify-content-center rounded" style="height: 300px;">
+                                        <i class="fas fa-book fa-5x text-muted"></i>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                         </div>
                         
@@ -65,19 +93,145 @@
                 </div>
             </div>
             
+            <!-- Sistema de Avaliações e Comentários -->
             <div class="card mt-4">
-                <div class="card-header">
-                    <h5>Comentários e Avaliações</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Avaliações e Comentários</h5>
+                    {% if avg_rating %}
+                        <div class="d-flex align-items-center">
+                            <div class="rating-stars me-2">
+                                {% for i in range(1, 6) %}
+                                    {% if i <= avg_rating|int %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% elif i - 0.5 <= avg_rating %}
+                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="fw-bold">{{ "%.1f"|format(avg_rating) }}</span>
+                            <span class="text-muted ms-2">({{ total_ratings }} avaliações)</span>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="card-body">
-                    <p class="text-muted">Funcionalidade em desenvolvimento. Em breve você poderá comentar e avaliar este conteúdo.</p>
+                    {% if current_user.is_authenticated %}
+                        <!-- Formulário de Avaliação -->
+                        <div class="mb-4 p-3 bg-light rounded">
+                            <h6 class="mb-3">Deixe sua avaliação</h6>
+                            <form method="POST" action="{{ url_for('content.add_rating', content_id=content.id) }}">
+                                <div class="mb-3">
+                                    <label class="form-label">Sua nota:</label>
+                                    <div class="rating-input">
+                                        {% for i in range(5, 0, -1) %}
+                                            <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" 
+                                                   {% if user_rating and user_rating.rating == i %}checked{% endif %} required>
+                                            <label for="star{{ i }}">
+                                                <i class="fas fa-star"></i>
+                                            </label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="review" class="form-label">Seu comentário (opcional):</label>
+                                    <textarea class="form-control" id="review" name="review" rows="3" 
+                                              placeholder="Compartilhe sua opinião sobre esta obra...">{% if user_rating %}{{ user_rating.review or '' }}{% endif %}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> 
+                                    {% if user_rating %}Atualizar Avaliação{% else %}Enviar Avaliação{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> 
+                            <a href="{{ url_for('auth.login') }}">Faça login</a> para avaliar e comentar esta obra.
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Lista de Avaliações -->
+                    {% if ratings %}
+                        <h6 class="mt-4 mb-3">Todas as avaliações:</h6>
+                        {% for rating in ratings %}
+                            <div class="rating-item mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ rating.usuario.nome }}</strong>
+                                        <div class="rating-stars small">
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= rating.rating %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <small class="text-muted">{{ rating.created_at.strftime('%d/%m/%Y às %H:%M') }}</small>
+                                    </div>
+                                    {% if current_user.is_authenticated and (current_user.id == rating.user_id or current_user.is_admin) %}
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                onclick="if(confirm('Deseja excluir esta avaliação?')) document.getElementById('delete-rating-{{ rating.id }}').submit();">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        <form id="delete-rating-{{ rating.id }}" method="POST" 
+                                              action="{{ url_for('content.delete_rating', rating_id=rating.id) }}" 
+                                              style="display: none;">
+                                        </form>
+                                    {% endif %}
+                                </div>
+                                {% if rating.review %}
+                                    <p class="mt-2 mb-0">{{ rating.review }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3">Nenhuma avaliação ainda. Seja o primeiro a avaliar!</p>
+                    {% endif %}
                 </div>
             </div>
             
             <div class="mt-3">
-                <a href="{{ url_for('content.list_content') }}" class="btn btn-secondary">Voltar ao Catálogo</a>
+                <a href="{{ url_for('content.list_content') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar ao Catálogo
+                </a>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.rating-input label {
+    cursor: pointer;
+    font-size: 2rem;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input[type="radio"]:checked ~ label {
+    color: #ffc107;
+}
+
+.rating-stars i {
+    font-size: 1.2rem;
+}
+
+.rating-item {
+    background: #f8f9fa;
+}
+</style>
 {% endblock %}

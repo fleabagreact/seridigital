@@ -34,9 +34,15 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="file" class="form-label">Arquivo da Obra (PDF ou EPUB)</label>
-                            <input type="file" class="form-control" id="file" name="file" accept=".pdf,.epub" required>
-                            <small class="text-muted">Formatos aceitos: PDF, EPUB</small>
+                            <label for="url" class="form-label">Link do YouTube</label>
+                            <input type="url" class="form-control" id="url" name="url" placeholder="https://youtube.com/watch?v=...">
+                            <small class="text-muted">Link do YouTube relacionado à obra</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="file" class="form-label">Arquivo da Obra (PDF ou EPUB) - opcional se houver link do YouTube</label>
+                            <input type="file" class="form-control" id="file" name="file" accept=".pdf,.epub">
+                            <small class="text-muted">Formatos aceitos: PDF, EPUB. Arquivo ou YouTube é obrigatório.</small>
                         </div>
                         
                         <div class="row">
