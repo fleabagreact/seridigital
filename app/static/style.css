@@ -299,7 +299,7 @@ h2 {
 }
 
 .text-muted {
-    color: var(--ink-muted) !important;
+    color: var(--color-paper) !important;
 }
 
 .text-muted-white {
