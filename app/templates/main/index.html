@@ -37,7 +37,7 @@
                 </a>
                 {% endfor %}
             </div>
-            {% else %}
+            {% elif termo_busca %}
                 <p class="text-muted-white">Nenhuma obra encontrada.</p>
             {% endif %}
 
@@ -50,7 +50,7 @@
 
                 <!-- Cards principais para usuário logado -->
                 <div class="row mt-4">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-user"></i> Meu Perfil</h5>
@@ -60,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-book"></i> Obras</h5>
@@ -70,12 +70,22 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-3 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-comments"></i> Posts</h5>
                                 <p class="card-text">Veja e crie posts na comunidade.</p>
                                 <a href="{{ url_for('posts.list_posts') }}" class="btn btn-primary">Ver Posts</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-users"></i> Comunidades</h5>
+                                <p class="card-text">Acesse as comunidades das quais você é membro.</p>
+                                <a href="{{ url_for('comunidade.minhas_comunidades') }}" class="btn btn-primary">Ver Comunidades</a>
                             </div>
                         </div>
                     </div>

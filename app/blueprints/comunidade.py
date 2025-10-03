@@ -13,6 +13,61 @@ def comunidade():
     comunidades = current_user.get_accessible_communities(include_filtered=include_filtered)
     return render_template('lista_comunidades.html', comunidades=comunidades)
 
+@comunidade_bp.route('/minhascomunidades/', methods=['GET'])
+@login_required
+def minhas_comunidades():
+    """Lista apenas comunidades em que o usuário é membro (dono ou interagiu)."""
+    include_filtered = request.args.get('include_filtered', 'false').lower() == 'true'
+
+    # Subconsultas de participação por posts, comentários e likes
+    user_post_communities = db.session.query(CommunityPost.community_id).filter(
+        CommunityPost.author_id == current_user.id
+    )
+
+    user_comment_communities = (db.session.query(CommunityPost.community_id)
+        .join(CommunityPostComment, CommunityPostComment.post_id == CommunityPost.id)
+        .filter(CommunityPostComment.user_id == current_user.id)
+    )
+
+    user_like_communities = (db.session.query(CommunityPost.community_id)
+        .join(CommunityPostLike, CommunityPostLike.post_id == CommunityPost.id)
+        .filter(CommunityPostLike.user_id == current_user.id)
+    )
+
+    # Comunidades bloqueadas pelo usuário (para exclusão)
+    blocked_ids = db.session.query(CommunityBlock.community_id).filter(
+        CommunityBlock.user_id == current_user.id
+    )
+
+    query = Community.query.filter(Community.status == 'active')
+
+    # Participação: dono ou interagiu (post, comentário, like)
+    query = query.filter(
+        (
+            (Community.owner_id == current_user.id) |
+            (Community.id.in_(user_post_communities)) |
+            (Community.id.in_(user_comment_communities)) |
+            (Community.id.in_(user_like_communities))
+        )
+    )
+
+    # Excluir bloqueadas
+    query = query.filter(~Community.id.in_(blocked_ids))
+
+    # Filtragem de conteúdo sensível
+    if not include_filtered:
+        query = query.filter(Community.is_filtered.is_(False))
+
+    comunidades = query.order_by(Community.created_at.asc()).all()
+
+    return render_template('lista_comunidades.html', comunidades=comunidades)
+
+@comunidade_bp.route('/minhascomuidades/', methods=['GET'])
+@login_required
+def minhas_comuidades_alias():
+    """Alias com a grafia solicitada, redireciona para a rota correta."""
+    return redirect(url_for('comunidade.minhas_comunidades', **request.args))
+
 @comunidade_bp.route('/oficial', methods=['GET'])
 @login_required
 def comunidade_oficial():
