@@ -32,7 +32,7 @@
                                     {% if u.biografia %}
                                         <p class="card-text">{{ u.biografia[:100] }}{% if u.biografia|length > 100 %}...{% endif %}</p>
                                     {% else %}
-                                        <p class="card-text text-muted">Nenhuma biografia disponível.</p>
+                                        <p class="card-text" style="color: #000;">Nenhuma biografia disponível.</p>
                                     {% endif %}
                                     
                                     <div class="d-flex justify-content-between align-items-center">

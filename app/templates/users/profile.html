@@ -78,7 +78,7 @@
                         
                         <div class="col-md-8">
                             <h4>{{ usuario.nome }}</h4>
-                            <p class="text-muted">{{ usuario.email }}</p>
+                            <p style="color: #000 !important;">{{ usuario.email }}</p>
                             
                             <hr>
                             
@@ -93,7 +93,7 @@
                                 </div>
                             {% else %}
                                 <div class="mb-3">
-                                    <em class="text-muted">Nenhuma biografia disponível.</em>
+                                    <em style="color: #000;">Nenhuma biografia disponível.</em>
                                 </div>
                             {% endif %}
                             
@@ -102,15 +102,15 @@
                             <div class="row text-center">
                                 <div class="col-4">
                                     <h5>{{ usuario.comentarios.count() }}</h5>
-                                    <small class="text-muted">Comentários</small>
+                                    <small style="color: #000 !important;">Comentários</small>
                                 </div>
                                 <div class="col-4">
                                     <h5>{{ usuario.likes.count() }}</h5>
-                                    <small class="text-muted">Likes</small>
+                                    <small style="color: #000 !important;">Likes</small>
                                 </div>
                                 <div class="col-4">
                                     <h5>{{ usuario.avaliacoes.count() }}</h5>
-                                    <small class="text-muted">Avaliações</small>
+                                    <small style="color: #000 !important;">Avaliações</small>
                                 </div>
                             </div>
                         </div>
@@ -121,8 +121,8 @@
             <!-- Seção de atividades recentes -->
             <div class="card mt-4 mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0" style="color: #ffffff;">Atividades Recentes</h5>
-                    <small style="color: #ffffff;">Últimos 30 dias</small>
+                    <h5 class="mb-0" style="color: #ffffff!important;">Atividades Recentes</h5>
+                    <small style="color: #fffff !important;">Últimos 30 dias</small>
                 </div>
                 <div class="card-body">
                     {% if activities %}
@@ -174,9 +174,9 @@
                         {% endif %}
                     {% else %}
                         <div class="text-center py-4">
-                            <i class="fas fa-history fa-3x text-muted mb-3"></i>
-                            <p class="text-muted">Nenhuma atividade recente encontrada.</p>
-                            <small class="text-muted">
+                            <i class="fas fa-history fa-3x text-muted mb-3" style="color: #000 !important;"></i>
+                            <p class="text-muted" style="color: #000 !important;">Nenhuma atividade recente encontrada.</p>
+                            <small class="text-muted" style="color: #000 !important;">
                                 As atividades dos últimos 30 dias aparecerão aqui.
                             </small>
                         </div>
