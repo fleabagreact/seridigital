@@ -36,12 +36,6 @@ Repositório oficial do projeto **Seridigital**, desenvolvido como parte da Prá
 - ✅ Histórico de visualização
 - ✅ Categorização de conteúdo
 
-## Documentação
-
-- [Estrutura Modular](ESTRUTURA_MODULAR.md) - Organização do projeto em blueprints
-- [Sistema de Bloqueio e Filtragem](SISTEMA_BLOQUEIO_FILTRAGEM.md) - Documentação completa do sistema de controle de comunidades
-- [Resumo da Reorganização](RESUMO_REORGANIZACAO.md) - Histórico das mudanças no projeto
-
 ## Tecnologias Utilizadas
 
 - **Backend**: Flask, SQLAlchemy, Flask-Login
@@ -54,19 +48,3 @@ Repositório oficial do projeto **Seridigital**, desenvolvido como parte da Prá
 1. Clone o repositório
 2. Instale as dependências: `pip install -r requirements.txt`
 3. Execute a aplicação: `python run.py`
-
-## Comandos de Desenvolvimento
-
-```bash
-# Iniciar aplicação
-./comandos_dev.sh start
-
-# Testar rotas
-./comandos_dev.sh test
-
-# Ver estrutura do projeto
-./comandos_dev.sh structure
-
-# Listar rotas
-./comandos_dev.sh routes
-```
